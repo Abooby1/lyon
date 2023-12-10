@@ -1,17 +1,20 @@
 {
 	"type": "module",
-  "name": "lyon",
-  "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@types/node": "^18.0.6",
-    "node-fetch": "^3.2.6"
-  }
+	"name": "lyon",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@types/node": "^18.0.6",
+		"axios": "^1.6.2",
+		"form-data": "^4.0.0",
+		"node-fetch": "^3.2.6",
+		"simple-socket-js": "^2.1.20"
+	}
 }

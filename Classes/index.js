@@ -1,3 +1,4 @@
-import {Chat} from './Chat.js'
+import { Chat } from './Chat.js'
+import { User } from './User.js'
 
-export {Chat}
+export { Chat, User }
