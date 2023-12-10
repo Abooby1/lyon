@@ -1,6 +1,7 @@
 {
-  "name": "nodejs",
-  "version": "1.0.0",
+	"type": "module",
+  "name": "lyon",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
