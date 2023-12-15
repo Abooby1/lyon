@@ -3,26 +3,20 @@ Early January: Beta release
 Early Febuary: Full release
 
 Dates:
-- 12/10:
-* Work on Chat class
-
-- 12/11:
-* Work on Client class
-
-- 12/12:
+- 12/15:
 * Work on User class
 
-- 12/13:
+- 12/16:
 * Work on Post class
 
-- 12/14:
+- 12/17:
 * Work on Group class
 
-- 12/15:
+- 12/18:
 * Work on listeners
 
-- 12/16 | 12/17:
+- 12/19 | 12/20:
 * Debug
 
-- 12/18:
+- 12/21:
 * Tynum

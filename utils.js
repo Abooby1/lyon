@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import Socket from 'simple-socket-js'
+import { ClientAuth } from 'index.js'
 
 export async function request(url, method, body, auth, contentType = "application/json", stringify = true, useJson = false) {
 	return new Promise(async (resolve, reject) => {
@@ -8,7 +9,7 @@ export async function request(url, method, body, auth, contentType = "applicatio
 			headers: {
 				"cache": "no-cache",
 				"Content-Type": contentType,
-				"auth": auth
+				"auth": auth || ClientAuth
 			}
 		}
 

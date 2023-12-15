@@ -19,13 +19,12 @@ export class Chat {
 			let url = 'chats';
 			if(this._data.postid) {
 				url += `?postid=${this._data.postid}`;
-			}
-			if(this._data.chatid) {
+			} else if(this._data.chatid) {
 				url += `?chatid=${this._data.chatid}`;
-			}
-			if(this._data.userid) {
+			} else if(this._data.userid) {
 				url += `?userid=${this._data.userid}`;
 			}
+			
 			if(this._data.groupid) {
 				url += `?groupid=${this._data.groupid}`;
 			}
@@ -34,14 +33,10 @@ export class Chat {
 			this._code = code;
 
 			if(this._code == 200) {
-				this._response = JSON.parse(response)
-				if(this._data.chatid) {
-					this._response = this._response.chats[0];
-				}
-
+				this._response = JSON.parse(response).chats[0];
 				this._init = true;
 			} else {
-				console.error(`Chat ${this._data.id} errored: ${this._response}`)
+				console.error(`Chat class errored: ${this._response}`)
 			}
 
 			res(this)
