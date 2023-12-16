@@ -13,8 +13,8 @@ export class User {
 			}
 
 			let url = 'user';
-			if(this._data.userid) {
-				url += `?id=${this._data.userid}`;
+			if(this._data.id) {
+				url += `?id=${this._data.id}`;
 			} else if(this._data.name) {
 				url += `?name=${this._data.name}`;
 			}
@@ -26,7 +26,7 @@ export class User {
 				this._response = JSON.parse(response)
 				this._init = true;
 			} else {
-				console.error(`User class errored: ${this._response}`)
+				console.error(`User class errored: ${response}`)
 			}
 
 			res(this)

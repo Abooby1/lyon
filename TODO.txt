@@ -3,20 +3,12 @@ Early January: Beta release
 Early Febuary: Full release
 
 Dates:
-- 12/15:
-* Work on User class
-
-- 12/16:
-* Work on Post class
-
 - 12/17:
-* Work on Group class
-
-- 12/18:
 * Work on listeners
 
-- 12/19 | 12/20:
-* Debug
+- 12/18:
+* Work on Group class
 
-- 12/21:
-* Tynum
+- 12/19 | 12/20:
+* Invite people to use
+* Debug

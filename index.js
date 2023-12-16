@@ -4,14 +4,21 @@ import FormData from "form-data"
 
 import * as Classes from './Classes/index.js'
 import * as Utils from './utils.js'
+import * as Listeners from './listeners.js'
 
 export var ClientAuth;
+export var Clients = new Object();
+export var Config = {
+	GroupConnections: true
+}
 
 export class Client {
-	constructor({_data, userid, token}) {
+	constructor({_data, userid, token, config = Config}) {
 		this._data = _data;
 		this._auth = `${userid};${token}`;
 		this._bot = null;
+		Clients[userid] = this;
+		Config = config;
 
 		ClientAuth = this._auth;
 		formatBot(this)
@@ -40,7 +47,21 @@ export class Client {
 	}
 
 	async onPost(callback, dataObj) {
-		//
+		let data = { ...dataObj }
+		if(data.groupid) {
+			Listeners.addPost({
+				type: 'newpost',
+				callback,
+				groupid: data.groupid
+			})
+			
+			return;
+		}
+
+		Listeners.addPost({
+			type: 'newpost',
+			callback
+		})
 	}
 	async onInvite(callback, dataObj) {
 		//
