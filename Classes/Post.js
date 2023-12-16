@@ -15,7 +15,7 @@ export class Post {
 				res(this)
 			}
 
-			let url = 'posts/get';
+			let url = 'posts';
 			if(this._data.id) {
 				url += `?postid=${this._data.id}`;
 			} else if(this._data.userid) {
@@ -23,16 +23,16 @@ export class Post {
 			}
 
 			if(this._data.groupid) {
-				url += `?groupid=${this._data.groupid}`;
+				url += `&groupid=${this._data.groupid}`;
 			}
 			if(this._data.exclude) {
-				url += `?exclude=${this._data.exclude.toString()}`;
+				url += `&exclude=${this._data.exclude.toString()}`;
 			}
 			if(this._data.before) {
-				url += `?before=${this._data.before}`;
+				url += `&before=${this._data.before}`;
 			}
 			if(this._data.after) {
-				url += `?after=${this._data.after}`;
+				url += `&after=${this._data.after}`;
 			}
 
 			let [code, response] = await Utils.request('GET', url)
@@ -97,7 +97,7 @@ export class Post {
 
 	async edit(text) {
 		if(!this._init) return;
-		
+
 		return new Promise(async (res) => {
 			let [code, response] = await Utils.request('POST', `posts/edit?postid=${this._response._id}`, {
 				text

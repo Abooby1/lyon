@@ -39,7 +39,7 @@ export function addPost({ id, type, callback, groupid }) {
 		} else {
 			callbacks.post.new.push([groupid, callback])
 		}
-		
+
 		let query = {
 			task: 'general',
 			location: 'home',
@@ -48,7 +48,7 @@ export function addPost({ id, type, callback, groupid }) {
 		if(ClientAuth && Config.GroupConnections) {
 			query.userID = ClientAuth.split(';')[0];
 			query.token = ClientAuth;
-			query.groups = Clients[query.userID]._bot.groups.map(a => a._id)
+			query.groups = Object.keys(Clients[query.userID]._bot.groups)
 		}
 
 		if(listeners.post) {
@@ -57,13 +57,14 @@ export function addPost({ id, type, callback, groupid }) {
 			socket.subscribe(query, async function(data) {
 				if(data.type == 'newpost') {
 					let post = data.post;
-					
+
 					callbacks.post.new.forEach(async (callback) => {
 						if(typeof callback == 'function') {
-							callback(await new Classes.Post({ id: post._id }))
+							callback(await new Classes.Post({ id: post._id, groupid: post.GroupID }))
 						} else if(typeof callback == 'object') {
 							let [groupid, postCallback] = callback;
 							if(post.GroupID == groupid) {
+								console.log(post.GroupID)
 								postCallback(await new Classes.Post({ id: post._id, groupid: post.GroupID }))
 							}
 						}

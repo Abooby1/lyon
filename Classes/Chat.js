@@ -25,7 +25,7 @@ export class Chat {
 			}
 			
 			if(this._data.groupid) {
-				url += `?groupid=${this._data.groupid}`;
+				url += `&groupid=${this._data.groupid}`;
 			}
 
 			let [code, response] = await Utils.request('GET', url)

@@ -21,12 +21,22 @@ export class Client {
 		Config = config;
 
 		ClientAuth = this._auth;
-		formatBot(this)
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', 'me')
+
+			if(code == 200) {
+				this._bot = JSON.parse(response)
+			} else {
+				console.error('Error while fetching bot data')
+			}
+
+			res(this)
+		})
 	}
 
 	async post(text, groupid, images = []) {
 		if(!text || text.length == 0) return 'Text is needed.';
-		
+
 		return new Promise(async (res, rej) => {
 			let formData = new FormData()
 			formData.append('data', JSON.stringify({ text }))
@@ -54,7 +64,7 @@ export class Client {
 				callback,
 				groupid: data.groupid
 			})
-			
+
 			return;
 		}
 
@@ -70,7 +80,7 @@ export class Client {
 	async createGroup(dataObj) {
 		//
 	}
-	
+
 	async getPosts(dataObj) {
 		let data = { ...dataObj }
 		let url = 'posts';
@@ -79,7 +89,7 @@ export class Client {
 		} else if(data.userid) {
 			url += `?userid=${data.userid}`;
 		}
-		
+
 		if(data.groupid) {
 			url += `?groupid=${data.groupid}`;
 		}
@@ -89,7 +99,7 @@ export class Client {
 		if(data.after) {
 			url += `?after=${data.after}`;
 		}
-		
+
 		return new Promise(async (res) => {
 			let [code, response] = await Utils.request('GET', url)
 
@@ -97,7 +107,7 @@ export class Client {
 				let formattedPosts = JSON.parse(response).posts.map(async (postData) => {
 					return await new Classes.Post({ data: postData })
 				})
-				
+
 				res(formattedPosts)
 			} else {
 				res(response)
@@ -149,7 +159,7 @@ export class Client {
 		} else if(data.term) {
 			url = `user/search?term=${data.term}`;
 		}
-		
+
 		return new Promise(async (res) => {
 			let [code, response] = await Utils.request('GET', url)
 
@@ -158,7 +168,7 @@ export class Client {
 				if(url.startsWith('user/search')) {
 					users = users.map(user => user._id)
 				}
-				
+
 				let formattedUsers = users.map(async (userData) => {
 					if(url.startsWith('user/search')) {
 						return await new Classes.User({ id: userData })
@@ -288,7 +298,7 @@ export class Client {
 	async updatePicture(newPicture) {
 		let form = new FormData()
 		form.append('image', fs.createReadStream(newPicture))
-		
+
 		return new Promise(async (res) => {
 			let data = await fetch(serverURL + 'me/new/picture', {
 				method: 'POST',
@@ -326,13 +336,3 @@ export class Client {
 }
 
 export default Client;
-
-async function formatBot(client) {
-	let [code, response] = await Utils.request('me', 'GET', undefined, ClientAuth)
-
-	if(code == 200) {
-		client._bot = JSON.parse(response)
-	} else {
-		console.error('Error while fetching bot data')
-	}
-}

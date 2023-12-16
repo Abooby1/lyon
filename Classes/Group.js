@@ -20,10 +20,10 @@ export class Group {
 			}
 
 			if(this._data.before) {
-				url += `?before=${this._data.before}`;
+				url += `&before=${this._data.before}`;
 			}
 			if(this._data.after) {
-				url += `?after=${this._data.after}`;
+				url += `&after=${this._data.after}`;
 			}
 
 			let [code, response] = await Utils.request('GET', url)
