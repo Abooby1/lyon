@@ -23,6 +23,7 @@ export class Post {
 			}
 
 			if(this._data.groupid) {
+				this._groupid = this._data.groupid;
 				url += `&groupid=${this._data.groupid}`;
 			}
 			if(this._data.exclude) {
@@ -88,8 +89,16 @@ export class Post {
 		return await new User({ id: this._response.UserID })
 	}
 
-	async onChat() {
-		//
+	async onChat(callback) {
+		let url = 'chats/connect';
+		if(this._groupid) {
+			url += `?groupid=${this._groupid}`;
+		}
+		
+		let [code, response] = await Utils.request('POST', url)
+		Listeners.addPost({ id: this._response._id, type: 'newchat', callback })
+
+		return response;
 	}
 	async onDelete() {
 		//

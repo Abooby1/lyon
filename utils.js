@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 import { ClientAuth } from './index.js'
 
-export async function request(url, method, body, auth, contentType = "application/json", stringify = true, useJson = false) {
+export async function request(method, url, body, auth, contentType = "application/json", stringify = true, useJson = false) {
 	return new Promise(async (resolve, reject) => {
 		let data = {
 			method: method,
