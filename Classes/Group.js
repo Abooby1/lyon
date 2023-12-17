@@ -44,7 +44,7 @@ export class Group {
 	get invites() {
 		//
 	}
-	
+
 	async post() {
 		//
 	}

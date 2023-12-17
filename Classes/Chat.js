@@ -6,15 +6,15 @@ export class Chat {
 		const data = { ...dataObj }
 		this._data = data;
 		this._init = null;
-		
+
 		return new Promise(async (res, rej) => {
 			if(this._data.data) {
 				this._init = true;
 				this._response = this._data.data;
-				
+
 				res(this)
 			}
-			
+
 			let url = 'chats';
 			if(this._data.postid) {
 				url += `?postid=${this._data.postid}`;
@@ -23,7 +23,7 @@ export class Chat {
 			} else if(this._data.userid) {
 				url += `?userid=${this._data.userid}`;
 			}
-			
+
 			if(this._data.groupid) {
 				url += `&groupid=${this._data.groupid}`;
 			}
@@ -64,7 +64,7 @@ export class Chat {
 	}
 	get content() {
 		if(!this._init) return;
-		
+
 		return this._response.Text;
 	}
 	async author() {
@@ -91,7 +91,7 @@ export class Chat {
 	}
 	async delete() {
 		if(!this._init) return;
-		
+
 		return new Promise(async (res, rej) => {
 			let [code, response] = await Utils.request('DELETE', `chats/delete?chatid=${this._response._id}`)
 			if(code == 200) {
@@ -108,7 +108,7 @@ export class Chat {
 			let [code, response] = await Utils.request('POST', `chats/reply?chatid=${this._response._id}`, {
 				text
 			})
-			
+
 			if(code == 200) {
 				res(await new Chat({ id: response }))
 			} else {

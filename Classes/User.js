@@ -100,7 +100,7 @@ export class User {
 
 	async follow() {
 		if(!this._init) return;
-		
+
 		let [_, response] = await Utils.request('PUT', `user/follow?userid=${this._response._id}`)
 		return response;
 	}

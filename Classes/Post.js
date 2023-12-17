@@ -1,4 +1,5 @@
 import * as Utils from '../utils.js'
+import * as Listeners from '../listeners.js'
 import { User } from './index.js'
 
 export class Post {
@@ -90,15 +91,9 @@ export class Post {
 	}
 
 	async onChat(callback) {
-		let url = 'chats/connect';
-		if(this._groupid) {
-			url += `?groupid=${this._groupid}`;
-		}
-		
-		let [code, response] = await Utils.request('POST', url)
-		Listeners.addPost({ id: this._response._id, type: 'newchat', callback })
+		Listeners.addPost({ id: this._response._id, type: 'newchat', callback, groupid: this._groupid })
 
-		return response;
+		return true;
 	}
 	async onDelete() {
 		//

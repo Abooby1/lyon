@@ -2,11 +2,13 @@ import SimpleSocket from 'simple-socket-js'
 
 import { ClientAuth, Config, Clients } from './index.js'
 import * as Classes from './Classes/index.js'
+import * as Utils from './utils.js'
 
-const socket = new SimpleSocket({
+export const socketConfig = {
 	project_id: '61b9724ea70f1912d5e0eb11',
 	project_token: 'client_a05cd40e9f0d2b814249f06fbf97fe0f1d5'
-})
+}
+export const socket = new SimpleSocket(socketConfig)
 
 let callbacks = {// id: callback
 	post: {
@@ -28,11 +30,35 @@ let listeners = {
 	post: null,
 	group: null
 }
+let cache = {
+	groupSockets: new Object()
+}
+
+async function socketFunction(data) {
+	switch(data.type) {
+		case 'chat':
+			let chat = data.chat;
+			let callback;
+			if(chat.GroupID) {
+				callback = callbacks.post.chats[`${chat.PostID};${chat.GroupID}`];
+			} else {
+				callback = callbacks.post.chats[chat.PostID];
+			}
+			if(callback) {
+				callback(await new Classes.Chat({ id: chat._id, groupid: chat.GroupID }))
+			}
+			break;
+		case 'chatedit':
+			break;
+		case 'chatdelete':
+			break;
+	}
+}
 
 export function addChat({ id, type, callback }) {
 	//
 }
-export function addPost({ id, type, callback, groupid }) {
+export async function addPost({ id, type, callback, groupid }) {
 	if(type == 'newpost') {
 		if(!groupid) {
 			callbacks.post.new.push(callback)
@@ -73,25 +99,47 @@ export function addPost({ id, type, callback, groupid }) {
 			})
 		}
 	} else if(type == 'newchat') {
-		callbacks.post.chats[id] = callback;
+		let connect;
+		let url = 'chats/connect';
+		let ssid = socket.secureID;
+
+		if(groupid) {
+			callbacks.post.chats[`${id};${groupid}`] = callback;
+
+			url += '?groupid=' + groupid;
+			connect = Object.keys(callbacks.post.chats).map(a => {
+				if(a.split(';')[1] == groupid) {
+					return a.split(';')[0];
+				}
+			})
+
+			if(cache.groupSockets[groupid]) {
+				ssid = cache.groupSockets[groupid].secureID;
+			} else {
+				let groupSocket = new SimpleSocket(socketConfig)
+				await new Promise((res) => {
+					groupSocket.onopen = function() {
+						ssid = groupSocket.secureID;
+						groupSocket.remotes.stream = socketFunction;
+
+						cache.groupSockets[groupid] = groupSocket;
+						res();
+					}
+				})
+			}
+		} else {
+			callbacks.post.chats[id] = callback;
+			connect = Object.keys(callbacks.post.chats).filter(a => a.split(';').length == 1)
+		}
+
+		let [code, response] = await Utils.request('POST', url, {
+			connect,
+			ssid
+		})
 	}
 }
 export function addGroup({ id, type, callback }) {
 	//
 }
 
-socket.remotes.stream = async function(data) {
-	switch(data.type) {
-		case 'chat':
-			let chat = data.chat;
-			let callback = callbacks.post.chats[chat.PostID];
-			if(callback) {
-				callback(await new Classes.Chat({ id: chat._id }))
-			}
-			break;
-		case 'chatedit':
-			break;
-		case 'chatdelete':
-			break;
-	}
-}
+socket.remotes.stream = socketFunction;
