@@ -1,6 +1,6 @@
 import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
-import { User } from './index.js'
+import { User, Chat } from './index.js'
 
 export class Post {
 	constructor(dataObj) {

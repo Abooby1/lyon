@@ -27,7 +27,7 @@ export class Client {
 			if(code == 200) {
 				this._bot = JSON.parse(response)
 			} else {
-				console.error('Error while fetching bot data')
+				throw new Error('Error while fetching bot data')
 			}
 
 			res(this)

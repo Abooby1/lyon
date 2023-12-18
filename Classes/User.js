@@ -1,3 +1,5 @@
+import * as Utils from '../utils.js'
+
 export class User {
 	constructor(dataObj) {
 		const data = { ...dataObj }
