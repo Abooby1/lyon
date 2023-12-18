@@ -4,7 +4,7 @@ import { ClientAuth, Config, Clients } from './index.js'
 import * as Classes from './Classes/index.js'
 import * as Utils from './utils.js'
 
-export const socketConfig = {
+const socketConfig = {
 	project_id: '61b9724ea70f1912d5e0eb11',
 	project_token: 'client_a05cd40e9f0d2b814249f06fbf97fe0f1d5'
 }
@@ -80,9 +80,9 @@ function connectGroup(groupid) {
 }
 
 export function addChat({ id, type, callback, groupid }) {
-	if(type == 'deleted') {//make it so that it connects all onchat, ondelete and onedit groupid callbacks
+	if(type == 'deleted') {//get connects, call connectGroup for ssid, and send request
 		callbacks.chat.deletes[id] = callback;
-		
+
 		if(groupid && !groupSockets[groupid]) {
 			let connect = Object.keys(callbacks.chat.deletes)
 		}
@@ -131,7 +131,7 @@ export async function addPost({ id, type, callback, groupid }) {
 
 		return;
 	}
-	
+
 	if(type == 'newchat') {
 		let connect;
 		let url = 'chats/connect';
@@ -164,6 +164,8 @@ export async function addPost({ id, type, callback, groupid }) {
 	if(type == 'deleted' || type == 'edited') {
 		if(type == 'deleted') {
 			callbacks.post.deletes[id] = callback;
+		} else if(type == 'edited') {
+			callbacks.post.edits[id] = callback;
 		}
 
 		let deletedIds = Object.keys(callbacks.post.deletes)
@@ -174,7 +176,7 @@ export async function addPost({ id, type, callback, groupid }) {
 		}
 
 		if(!listeners.postActions) {
-			socket.subscribe(query, async function(data) {
+			listeners.postActions = socket.subscribe(query, async function(data) {
 				switch(data.type) {
 					case 'delete':
 						let deleteCallback = callbacks.post.deletes[data._id];

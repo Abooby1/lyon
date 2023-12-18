@@ -202,11 +202,16 @@ export class Client {
 			let [code, response] = await Utils.request('GET', url)
 
 			if(code == 200) {
-				let groups = JSON.parse(response).groups;
+				response = JSON.parse(response);
 
-				let formattedGroups = groups.map(async (groupData) => {
-					return await new Classes.Group({ data: groupData })
-				})
+				let formattedGroups;
+				if(response.groups) {
+					formattedGroups = response.groups.map(async (groupData) => {
+						return await new Classes.Group({ data: groupData })
+					})
+				} else {
+					formattedGroups = [await new Classes.Group({ data: response })]
+				}
 
 				res(formattedGroups)
 			} else {
