@@ -28,6 +28,7 @@ let callbacks = {// id: callback
 }
 let listeners = {
 	post: null,
+	postActions: null,
 	group: null
 }
 let cache = {
@@ -38,25 +39,54 @@ async function socketFunction(data) {
 	switch(data.type) {
 		case 'chat':
 			let chat = data.chat;
-			let callback;
+			let newChatCallback;
 			if(chat.GroupID) {
-				callback = callbacks.post.chats[`${chat.PostID};${chat.GroupID}`];
+				newChatCallback = callbacks.post.chats[`${chat.PostID};${chat.GroupID}`];
 			} else {
-				callback = callbacks.post.chats[chat.PostID];
+				newChatCallback = callbacks.post.chats[chat.PostID];
 			}
-			if(callback) {
-				callback(await new Classes.Chat({ id: chat._id, groupid: chat.GroupID }))
+			if(newChatCallback) {
+				newChatCallback(await new Classes.Chat({ id: chat._id, groupid: chat.GroupID }))
 			}
 			break;
 		case 'chatedit':
+			let editCallback = callbacks.chat.deletes[data.chatID];
+			if(editCallback) {
+				editCallback({ id: data.chatID, text: data.text })
+			}
 			break;
 		case 'chatdelete':
+			let deleteCallback = callbacks.chat.deletes[data.chatID];
+			if(deleteCallback) {
+				deleteCallback({ id: data.chatID })
+			}
 			break;
 	}
 }
+function connectGroup(groupid) {
+	return new Promise((res) => {
+		if(cache.groupSockets[groupid]) {
+			res(cache.groupSockets[groupid].secureID);
+		} else {
+			let groupSocket = new SimpleSocket(socketConfig)
+			groupSocket.onopen = function() {
+				groupSocket.remotes.stream = socketFunction;
 
-export function addChat({ id, type, callback }) {
-	//
+				cache.groupSockets[groupid] = groupSocket;
+				res(groupSocket.secureID);
+			}
+		}
+	})
+}
+
+export function addChat({ id, type, callback, groupid }) {
+	if(type == 'deleted') {//make it so that it connects all onchat, ondelete and onedit groupid callbacks
+		callbacks.chat.deletes[id] = callback;
+		
+		if(groupid && !groupSockets[groupid]) {
+			let connect = Object.keys(callbacks.chat.deletes)
+		}
+	}
 }
 export async function addPost({ id, type, callback, groupid }) {
 	if(type == 'newpost') {
@@ -98,7 +128,11 @@ export async function addPost({ id, type, callback, groupid }) {
 				}
 			})
 		}
-	} else if(type == 'newchat') {
+
+		return;
+	}
+	
+	if(type == 'newchat') {
 		let connect;
 		let url = 'chats/connect';
 		let ssid = socket.secureID;
@@ -113,20 +147,7 @@ export async function addPost({ id, type, callback, groupid }) {
 				}
 			})
 
-			if(cache.groupSockets[groupid]) {
-				ssid = cache.groupSockets[groupid].secureID;
-			} else {
-				let groupSocket = new SimpleSocket(socketConfig)
-				await new Promise((res) => {
-					groupSocket.onopen = function() {
-						ssid = groupSocket.secureID;
-						groupSocket.remotes.stream = socketFunction;
-
-						cache.groupSockets[groupid] = groupSocket;
-						res();
-					}
-				})
-			}
+			ssid = await connectGroup(groupid)
 		} else {
 			callbacks.post.chats[id] = callback;
 			connect = Object.keys(callbacks.post.chats).filter(a => a.split(';').length == 1)
@@ -136,6 +157,44 @@ export async function addPost({ id, type, callback, groupid }) {
 			connect,
 			ssid
 		})
+
+		return;
+	}
+
+	if(type == 'deleted' || type == 'edited') {
+		if(type == 'deleted') {
+			callbacks.post.deletes[id] = callback;
+		}
+
+		let deletedIds = Object.keys(callbacks.post.deletes)
+		let editedIds = Object.keys(callbacks.post.edits)
+		let query = {
+			task: 'post',
+			_id: [...new Set([...deletedIds, ...editedIds])]
+		}
+
+		if(!listeners.postActions) {
+			socket.subscribe(query, async function(data) {
+				switch(data.type) {
+					case 'delete':
+						let deleteCallback = callbacks.post.deletes[data._id];
+						if(deleteCallback) {
+							deleteCallback({ id: data._id })
+						}
+						break;
+					case 'edit':
+						let editCallback = callbacks.post.edits[data._id];
+						if(editCallback) {
+							editCallback({ id: data._id, text: data.text })
+						}
+						break;
+				}
+			})
+		} else {
+			listeners.postActions.edit(query)
+		}
+
+		return;
 	}
 }
 export function addGroup({ id, type, callback }) {

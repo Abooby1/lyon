@@ -131,13 +131,6 @@ export class User {
 		//
 	}
 
-	async onFollow() {
-		//
-	}
-	async onPost() {
-		//
-	}
-
 	async ban() {
 		//
 	}

@@ -1,7 +1,3 @@
-Late December: Alpha release
-Early January: Beta release
-Early Febuary: Full release
-
 Dates:
 - 12/17 - 12/19:
 * Work on listeners

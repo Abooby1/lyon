@@ -1,4 +1,5 @@
 import * as Utils from '../utils.js'
+import * as Listeners from '../listeners.js'
 
 export class Group {
 	constructor(dataObj) {
@@ -58,8 +59,10 @@ export class Group {
 		//
 	}
 
-	async onPost() {
-		//
+	async onPost(callback) {
+		Listeners.addPost({ type: 'newpost', callback, groupid: this._response._id })
+
+		return true;
 	}
 }
 

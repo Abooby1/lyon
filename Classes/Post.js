@@ -95,8 +95,15 @@ export class Post {
 
 		return true;
 	}
-	async onDelete() {
-		//
+	async onDelete(callback) {
+		Listeners.addPost({ id: this._response._id, type: 'deleted', callback })
+
+		return true;
+	}
+	async onEdit(callback) {
+		Listeners.addPost({ id: this._response._id, type: 'edited', callback })
+
+		return true;
 	}
 
 	async edit(text) {
