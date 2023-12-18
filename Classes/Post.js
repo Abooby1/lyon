@@ -56,6 +56,11 @@ export class Post {
 
 		return this._response._id;
 	}
+	get groupid() {
+		if(!this._init) return;
+
+		return this._groupid;
+	}
 	get content() {
 		if(!this._init) return;;
 
@@ -106,6 +111,21 @@ export class Post {
 		return true;
 	}
 
+	async chat(text) {
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('POST', `chats/new?postid=${this._response._id}`, {
+				text
+			})
+
+			if(code == 200) {
+				res(await new Chat({ id: response }))
+			} else {
+				res(response)
+			}
+		})
+	}
 	async edit(text) {
 		if(!this._init) return;
 

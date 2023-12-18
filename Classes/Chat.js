@@ -105,8 +105,9 @@ export class Chat {
 		if(!this._init) return;
 
 		return new Promise(async (res, rej) => {
-			let [code, response] = await Utils.request('POST', `chats/reply?chatid=${this._response._id}`, {
-				text
+			let [code, response] = await Utils.request('POST', `chats/new?postid=${this._response.PostID}`, {
+				text,
+				replyID: this._response._id
 			})
 
 			if(code == 200) {
