@@ -14,16 +14,12 @@ let callbacks = {// id: callback
 	post: {
 		new: new Array(),
 		chats: new Object(),
-		likes: new Object(),
 		deletes: new Object(),
 		edits: new Object()
 	},
 	chat: {
 		deletes: new Object(),
 		edits: new Object()
-	},
-	group: {
-		//
 	}
 }
 let listeners = {
@@ -52,13 +48,13 @@ async function socketFunction(data) {
 		case 'chatedit':
 			let editCallback = callbacks.chat.deletes[data.chatID];
 			if(editCallback) {
-				editCallback({ id: data.chatID, text: data.text })
+				editCallback.callback({ id: data.chatID, text: data.text })
 			}
 			break;
 		case 'chatdelete':
 			let deleteCallback = callbacks.chat.deletes[data.chatID];
 			if(deleteCallback) {
-				deleteCallback({ id: data.chatID })
+				deleteCallback.callback({ id: data.chatID })
 			}
 			break;
 	}
@@ -78,14 +74,49 @@ function connectGroup(groupid) {
 		}
 	})
 }
+function getChatConnects() {
+	let chats = Object.keys(callbacks.post.chats).filter(a => a.split(';')[1] == groupid);
+	let deletes = callback.post.deletes.map(a => {
+		return a.postid;
+	})
+	let edits = callback.post.edits.map(a => {
+		return a.postid;
+	})
 
-export function addChat({ id, type, callback, groupid }) {
-	if(type == 'deleted') {//get connects, call connectGroup for ssid, and send request
-		callbacks.chat.deletes[id] = callback;
+	return [...new Set([...chats, ...deletes, ...edits])]
+}
 
-		if(groupid && !groupSockets[groupid]) {
-			let connect = Object.keys(callbacks.chat.deletes)
+export async function addChat({ id, type, callback, groupid, postid }) {
+	if(type == 'deleted') {
+		callbacks.chat.deletes[id] = { postid, callback };
+
+		if(groupid && !cache.groupSockets[groupid]) {
+			let connect = getChatConnects()
+			let ssid = await connectGroup(groupid)
+
+			let [code, response] = await Utils.request('POST', `chats/connect?groupid=${groupid}`, {
+				connect,
+				ssid
+			})
 		}
+
+		return;
+	}
+
+	if(type == 'edited') {
+		callbacks.chat.edits[id] = { postid, callback };
+
+		if(groupid && !cache.groupSockets[groupid]) {
+			let connect = getChatConnects()
+			let ssid = await connectGroup(groupid)
+
+			let [code, response] = await Utils.request('POST', `chats/connect?groupid=${groupid}`, {
+				connect,
+				ssid
+			})
+		}
+
+		return;
 	}
 }
 export async function addPost({ id, type, callback, groupid }) {
@@ -120,7 +151,6 @@ export async function addPost({ id, type, callback, groupid }) {
 						} else if(typeof callback == 'object') {
 							let [groupid, postCallback] = callback;
 							if(post.GroupID == groupid) {
-								console.log(post.GroupID)
 								postCallback(await new Classes.Post({ id: post._id, groupid: post.GroupID }))
 							}
 						}

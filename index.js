@@ -9,16 +9,27 @@ import * as Listeners from './listeners.js'
 export var ClientAuth;
 export var Clients = new Object();
 export var Config = {
-	GroupConnections: true
+	GroupConnections: true,
+	LyonStats: false
 }
 
 export class Client {
-	constructor({_data, userid, token, config = Config}) {
-		this._data = _data;
+	constructor({ userid, token, config, onReady }) {
+		if(!userid) throw new Error('userid is required')
+		if(!token) throw new Error('token is required')
+		if(Clients[userid]) throw new Error(`Client "${userid}" was already made.`)
+		
 		this._auth = `${userid};${token}`;
 		this._bot = null;
 		Clients[userid] = this;
-		Config = config;
+
+		if(config) {
+			let keys = Object.keys(config)
+			for(let i = 0; i < keys.length; i++) {
+				let key = keys[i];
+				Config[key] = config[key];
+			}
+		}
 
 		ClientAuth = this._auth;
 		return new Promise(async (res) => {
@@ -27,7 +38,11 @@ export class Client {
 			if(code == 200) {
 				this._bot = JSON.parse(response)
 			} else {
-				throw new Error('Error while fetching bot data')
+				throw new Error(`Error while fetching bot data: ${response}`)
+			}
+
+			if(typeof onReady == 'function') {
+				onReady()
 			}
 
 			res(this)
@@ -73,7 +88,7 @@ export class Client {
 			callback
 		})
 	}
-	async onInvite(callback, dataObj) {
+	async onInvite(callback) {
 		//
 	}
 

@@ -118,10 +118,14 @@ export class Chat {
 		})
 	}
 
-	async onDelete() {
-		//
+	async onDelete(callback) {
+		Listeners.addChat({ type: 'deleted', id: this._response._id, groupid: this._response.GroupID, postid: this._response.PostID, callback })
+
+		return true;
 	}
-	async onEdit() {
-		//
+	async onEdit(callback) {
+		Listeners.addChat({ type: 'edited', id: this._response._id, groupid: this._response.GroupID, postid: this._response.PostID, callback })
+
+		return true;
 	}
 }
