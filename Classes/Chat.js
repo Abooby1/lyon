@@ -129,4 +129,8 @@ export class Chat {
 
 		return true;
 	}
+
+	async report() {
+		//
+	}
 }

@@ -1,5 +1,6 @@
 import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
+import * as Classes from './index.js'
 
 export class Group {
 	constructor(dataObj) {
@@ -39,24 +40,105 @@ export class Group {
 		})
 	}
 
-	get members() {
-		//
+	async members() {
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', `groups/members?groupid=${this._response._id}`)
+			if(code == 200) {
+				response = JSON.parse(response)
+				let users = response.Members;
+
+				let formattedUsers = users.map(async (a) => {
+					return await new Classes.GroupUser({ id: a._id })
+				})
+				res(formattedUsers)
+			} else {
+				res(response)
+			}
+		})
 	}
-	get invites() {
-		//
+	async moderators() {
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', `groups/members?groupid=${this._response._id}`)
+			if(code == 200) {
+				response = JSON.parse(response)
+				let users = response.Moderators;
+
+				let formattedUsers = users.map(async (a) => {
+					return await new Classes.GroupUser({ id: a._id })
+				})
+				res(formattedUsers)
+			} else {
+				res(response)
+			}
+		})
+	}
+	async invites() {
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', `groups/sentinvites?groupid=${this._response._id}&type=user&amount=200`)
+
+			if(code == 200) {
+				let invites = JSON.parse(response).members;
+				let formattedInvites = invites.map(async (a) => {
+					return await new GroupInvite({ data: a })
+				})
+
+				res(formattedInvites)
+			} else {
+				res(response)
+			}
+		})
 	}
 
-	async post() {
+	async post(text, images = []) {
+		if(!this._init) return;
+		if(!text || text.length == 0) return 'Text is needed.';
+
+		return new Promise(async (res, rej) => {
+			let formData = new FormData()
+			formData.append('data', JSON.stringify({ text }))
+			for(let i=0;i<images.length;i++) {
+				formData.append(`image${i}`, fs.createReadStream(images[i]))
+			}
+
+			axios.post(`https://photop.exotek.co/posts/new?group=${this._response._id}`, formData, {
+				headers: {
+					auth: ClientAuth
+				}
+			}).then(async (response) => {
+				res(await new Classes.Post({ id: response.data }))
+			}).catch(response => {
+				res(response.response.data)
+			})
+		})
+	}
+	async edit({ name, invite, image }) {
+		if(!this._init) return;
+
 		//
 	}
-	async edit() {
-		//
-	}
-	async invite() {
-		//
+	async invite(userid) {
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [_, response] = await Utils.request('POST', `groups/invite?groupid=${this._response._id}`, {
+				type: 'user',
+				data: userid
+			})
+
+			res(response)
+		})
 	}
 	async leave() {
-		//
+		if(!this._init) return;
+
+		let [_, response] = await Utils.request('DELETE', `groups/leave?groupid=${this._response._id}`)
+		return response;
 	}
 
 	async onPost(callback) {
@@ -67,14 +149,42 @@ export class Group {
 }
 
 export class GroupInvite {
-	constructor() {
-		//
+	constructor(dataObj) {
+		let data = { ...dataObj }
+		this._data = data;
+		this._init = null;
+
+		if(this._data.data) {
+			this._response = this._data.data;
+			this._init = true;
+		}
+
+		return this;
 	}
 
-	async accept() {
-		//
+	async group() {
+		if(!this._init) return;
+
+		return await new Group({ id: this._response._id })
 	}
-	async reject() {
-		//
+	async accept() {
+		if(!this._init) return;
+
+		let [code, _] = await Utils.request('PUT', `groups/join?code=${this._response._id}`)
+		if(code != 200) {
+			return;
+		}
+
+		return true;
+	}
+	async revoke() {
+		if(!this._init) return;
+
+		let [code, _] = await Utils.request('DELETE', `groups/revoke?inviteid=${this._response._id}`)
+		if(code != 200) {
+			return;
+		}
+
+		return true;
 	}
 }

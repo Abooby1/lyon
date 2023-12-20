@@ -63,9 +63,9 @@ export class Client {
 				headers: {
 					auth: ClientAuth
 				}
-			}).then(response => {
-				res(response.data)
-			}).catch(response => {
+			}).then(async (response) => {
+					res(await new Classes.Post({ id: response.data }))
+				}).catch(response => {
 				res(response.response.data)
 			})
 		})
@@ -245,7 +245,22 @@ export class Client {
 		})
 	}
 	async getInvites() {
-		//
+		if(!this._bot) return 'Bot is not logged in.';
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', 'groups/invites?amount=75')
+			if(code == 200) {
+				response = JSON.parse(response)
+				let invites = response.invites;
+
+				let formattedInvites = invites.map(async (inviteData) => {
+					return await new Classes.GroupInvite({ data: inviteData })
+				})
+				res(formattedInvites)
+			} else {
+				res(response)
+			}
+		})
 	}
 
 	async joinGroup(dataObj) {

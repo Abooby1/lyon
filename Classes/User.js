@@ -5,6 +5,9 @@ export class User {
 		const data = { ...dataObj }
 		this._data = data;
 		this._init = null;
+		if(this._data.groupid) {
+			this._groupid = this._data.groupid;
+		}
 
 		return new Promise(async (res) => {
 			if(this._data.data) {
@@ -86,18 +89,32 @@ export class User {
 
 		return this._response.ProfileData.Visibility;
 	}
-	get pinned() {
-		if(!this._init) return;
-
-		return this._response.ProfileData.PinnedPost;
-	}
 	get status() {
 		if(!this._init) return;
 
 		return this._response.Status;
 	}
 	get premium() {
-		//
+		if(!this._init) return;
+		let returnValue;
+
+		if(this._response.Premium) {
+			returnValue = {
+				hasPremium: true,
+				expires: new Date(this._response.Premium.Expires * 1000)
+			}
+		} else {
+			returnValue = {
+				hasPremium: false
+			}
+		}
+
+		return returnValue;
+	}
+	async pinned() {
+		if(!this._init) return;
+
+		return await new Classes.Post({ id: this._response.ProfileData.PinnedPost });
 	}
 
 	async follow() {
@@ -134,6 +151,44 @@ export class User {
 	}
 
 	async ban() {
+		if(!this._init) return;
+		
+		return new Promise(async (res) => {
+			if(this._isGroup) {
+				let [_, response] = await Utils.request('PUT', `groups/moderate?groupid=${this._groupid}`, {
+					type: 'ban',
+					data: this._response._id
+				})
+
+				res(response)
+			}
+
+			//normal banning
+		})
+	}
+	async report() {
 		//
+	}
+}
+
+export class GroupUser extends User {
+	constructor(dataObj) {
+		super(dataObj)
+	}
+
+	get _isGroup() {
+		return true;
+	}
+	async kick() {
+		if(!this._init) return;
+		
+		return new Promise(async (res) => {
+			let [_, response] = await Utils.request('PUT', `groups/moderate?groupid=${this._groupid}`, {
+				type: 'kick',
+				data: this._response._id
+			})
+
+			res(response)
+		})
 	}
 }

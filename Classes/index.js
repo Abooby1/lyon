@@ -1,6 +1,6 @@
 import { Chat } from './Chat.js'
 import { User } from './User.js'
 import { Post } from './Post.js'
-import { Group } from './Group.js'
+import { Group, GroupInvite } from './Group.js'
 
-export { Chat, User, Post, Group }
+export { Chat, User, Post, Group, GroupInvite }

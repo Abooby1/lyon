@@ -173,4 +173,8 @@ export class Post {
 		let [_, response] = await Utils.request('DELETE', `posts/unpin?postid=${this._response._id}`)
 		return response;
 	}
+
+	async report() {
+		//
+	}
 }
