@@ -40,6 +40,21 @@ export class Group {
 		})
 	}
 
+	get id() {
+		//
+	}
+	get name() {
+		//
+	}
+	get image() {
+		//
+	}
+	get created() {
+		//
+	}
+	async owner() {
+		//
+	}
 	async members() {
 		if(!this._init) return;
 
@@ -50,7 +65,7 @@ export class Group {
 				let users = response.Members;
 
 				let formattedUsers = users.map(async (a) => {
-					return await new Classes.GroupUser({ id: a._id })
+					return await new Classes.GroupUser({ id: a._id, groupid: this._response._id })
 				})
 				res(formattedUsers)
 			} else {
@@ -68,7 +83,7 @@ export class Group {
 				let users = response.Moderators;
 
 				let formattedUsers = users.map(async (a) => {
-					return await new Classes.GroupUser({ id: a._id })
+					return await new Classes.GroupUser({ id: a, groupid: this._response._id })
 				})
 				res(formattedUsers)
 			} else {

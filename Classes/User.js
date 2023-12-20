@@ -1,4 +1,5 @@
 import * as Utils from '../utils.js'
+import * as Classes from './index.js'
 
 export class User {
 	constructor(dataObj) {
@@ -152,7 +153,7 @@ export class User {
 
 	async ban() {
 		if(!this._init) return;
-		
+
 		return new Promise(async (res) => {
 			if(this._isGroup) {
 				let [_, response] = await Utils.request('PUT', `groups/moderate?groupid=${this._groupid}`, {
@@ -181,7 +182,7 @@ export class GroupUser extends User {
 	}
 	async kick() {
 		if(!this._init) return;
-		
+
 		return new Promise(async (res) => {
 			let [_, response] = await Utils.request('PUT', `groups/moderate?groupid=${this._groupid}`, {
 				type: 'kick',
