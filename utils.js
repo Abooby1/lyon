@@ -1,5 +1,6 @@
 import fetch from 'node-fetch'
 import { ClientAuth } from './index.js'
+import FormData from 'form-data'
 
 export async function request(method, url, body, auth, contentType = "application/json", stringify = true, useJson = false) {
 	return new Promise(async (resolve, reject) => {

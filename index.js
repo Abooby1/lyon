@@ -18,7 +18,7 @@ export class Client {
 		if(!userid) throw new Error('userid is required')
 		if(!token) throw new Error('token is required')
 		if(Clients[userid]) throw new Error(`Client "${userid}" was already made.`)
-		
+
 		this._auth = `${userid};${token}`;
 		this._bot = null;
 		Clients[userid] = this;
@@ -167,12 +167,12 @@ export class Client {
 	async getUsers(dataObj) {
 		let data = { ...dataObj }
 		let url = 'user';
-		if(data.userid) {
-			url += `?id=${data.userid}`;
-		} else if(data.name) {
-			url += `?name=${data.name}`;
-		} else if(data.term) {
+		if(data.term) {
 			url = `user/search?term=${data.term}`;
+		}
+
+		if(!url.startsWith('user/search')) {
+			return new Classes.User(dataObj)
 		}
 
 		return new Promise(async (res) => {
@@ -187,8 +187,6 @@ export class Client {
 				let formattedUsers = users.map(async (userData) => {
 					if(url.startsWith('user/search')) {
 						return await new Classes.User({ id: userData })
-					} else {
-						return await new Classes.User({ data: userData })
 					}
 				})
 
