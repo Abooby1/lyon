@@ -33,9 +33,9 @@ export class Group {
 			let [code, response] = await Utils.request('GET', url)
 			this._code = code;
 
-			if(this._code == 200 && this._data.id) {
+			if(this._code == 200) {
 				this._init = true;
-				this._response = JSON.parse(response)
+				this._response = JSON.parse(response).groups[0];
 			} else {
 				console.error(`Group class errored: ${response}`)
 			}
@@ -54,6 +54,7 @@ export class Group {
 	}
 	get icon() {
 		if(!this._init) return;
+		if(!this._response.Icon) return;
 
 		return `https://photop-content.s3.amazonaws.com/GroupImages/${this._response.Icon}`;
 	}
@@ -152,7 +153,7 @@ export class Group {
 		if(image) {
 			form.append('image', fs.createReadStream(image))
 		}
-		
+
 		return new Promise(async (res) => {
 			let [_, response] = await Utils.request('PUT', `groups/edit?groupid=${this._response._id}`, form)
 
