@@ -72,7 +72,16 @@ export class Post {
 		return this._response.Timestamp;
 	}
 	get media() {
-		//
+		if(!this._init) return;
+
+		let images = new Array()
+		if (this._response.Media != null && this._response.Media.ImageCount > 0) {
+			for (let i = 0; i < this._response.Media.ImageCount; i++) {
+				images.push(`https://photop-content.s3.amazonaws.com/PostImages/${this._response._id}${i}`)
+			}
+		}
+
+		return images;
 	}
 	get likes() {
 		if(!this._init) return;

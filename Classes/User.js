@@ -145,10 +145,40 @@ export class User {
 	}
 
 	async followersParsed() {
-		//
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', `user/followers?userid=${this._response._id}&amount=50`)
+
+			if(code == 200) {
+				response = JSON.parse(response)
+
+				let formattedFollowers = response.map(async (user) => {
+					return await new Classes.User({ id: user._id })
+				})
+				res(formattedFollowers)
+			} else {
+				res(response)
+			}
+		})
 	}
 	async followingParsed() {
-		//
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [code, response] = await Utils.request('GET', `user/following?userid=${this._response._id}&amount=50`)
+
+			if(code == 200) {
+				response = JSON.parse(response)
+
+				let formattedFollowing = response.map(async (user) => {
+					return await new Classes.User({ id: user._id })
+				})
+				res(formattedFollowing)
+			} else {
+				res(response)
+			}
+		})
 	}
 
 	async ban() {

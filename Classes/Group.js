@@ -1,6 +1,8 @@
 import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
 import * as Classes from './index.js'
+import FormData from 'form-data'
+import fs from 'fs'
 
 export class Group {
 	constructor(dataObj) {
@@ -31,9 +33,9 @@ export class Group {
 			let [code, response] = await Utils.request('GET', url)
 			this._code = code;
 
-			if(this._code == 200) {
+			if(this._code == 200 && this._data.id) {
 				this._init = true;
-				this._response = response;
+				this._response = JSON.parse(response)
 			} else {
 				console.error(`Group class errored: ${response}`)
 			}
@@ -41,19 +43,29 @@ export class Group {
 	}
 
 	get id() {
-		//
+		if(!this._init) return;
+
+		return this._response._id;
 	}
 	get name() {
-		//
+		if(!this._init) return;
+
+		return this._response.Name;
 	}
-	get image() {
-		//
+	get icon() {
+		if(!this._init) return;
+
+		return `https://photop-content.s3.amazonaws.com/GroupImages/${this._response.Icon}`;
 	}
 	get created() {
-		//
+		if(!this._init) return;
+
+		return this._response.Timestamp;
 	}
 	async owner() {
-		//
+		if(!this._init) return;
+
+		return new Classes.User({ id: this._response.Owner })
 	}
 	async members() {
 		if(!this._init) return;
@@ -135,7 +147,17 @@ export class Group {
 	async edit({ name, invite, image }) {
 		if(!this._init) return;
 
-		//
+		let form = new FormData()
+		form.append('data', JSON.stringify({ name, invite }))
+		if(image) {
+			form.append('image', fs.createReadStream(image))
+		}
+		
+		return new Promise(async (res) => {
+			let [_, response] = await Utils.request('PUT', `groups/edit?groupid=${this._response._id}`, form)
+
+			res(response)
+		})
 	}
 	async invite(userid) {
 		if(!this._init) return;
