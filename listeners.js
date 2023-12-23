@@ -1,6 +1,6 @@
 import SimpleSocket from 'simple-socket-js'
 
-import { ClientAuth, Config, Clients } from './index.js'
+import { ClientAuth, Config, CurrentClient } from './index.js'
 import * as Classes from './Classes/index.js'
 import * as Utils from './utils.js'
 
@@ -135,7 +135,7 @@ export async function addPost({ id, type, callback, groupid }) {
 		if(ClientAuth && Config.GroupConnections) {
 			query.userID = ClientAuth.split(';')[0];
 			query.token = ClientAuth;
-			query.groups = Object.keys(Clients[query.userID]._bot.groups)
+			query.groups = Object.keys(CurrentClient._bot.groups)
 		}
 
 		if(listeners.post) {

@@ -1,6 +1,9 @@
 import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
 import * as Classes from './index.js'
+
+import { CurrentClient } from '../index.js'
+
 import FormData from 'form-data'
 import fs from 'fs'
 
@@ -218,7 +221,7 @@ export class GroupInvite {
 	async revoke() {
 		if(!this._init) return;
 
-		let [code, _] = await Utils.request('DELETE', `groups/revoke?inviteid=${this._response._id}`)
+		let [code, _] = await Utils.request('DELETE', `groups/revoke?inviteid=${this._response._id}${CurrentClient._bot.user._id}`)
 		if(code != 200) {
 			return;
 		}

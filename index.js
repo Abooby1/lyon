@@ -6,8 +6,10 @@ import * as Classes from './Classes/index.js'
 import * as Utils from './utils.js'
 import * as Listeners from './listeners.js'
 
+import { socket } from './listeners.js'
+
 export var ClientAuth;
-export var Clients = new Object();
+export var CurrentClient;
 export var Config = {
 	GroupConnections: true,
 	LyonStats: false
@@ -17,7 +19,7 @@ export class Client {
 	constructor({ userid, token, config, onReady }) {
 		if(!userid) throw new Error('userid is required')
 		if(!token) throw new Error('token is required')
-		if(Clients[userid]) throw new Error(`Client "${userid}" was already made.`)
+		if(CurrentClient) throw new Error(`Client has already been initialized`)
 
 		this._auth = `${userid};${token}`;
 		this._bot = null;
@@ -27,7 +29,7 @@ export class Client {
 		this._sockets = {
 			invites: null
 		};
-		Clients[userid] = this;
+		CurrentClient = this;
 
 		if(config) {
 			let keys = Object.keys(config)
@@ -42,13 +44,16 @@ export class Client {
 			let [code, response] = await Utils.request('GET', 'me')
 
 			if(code == 200) {
+				let _listeners = this._listeners;
 				this._bot = JSON.parse(response)
-				
+
 				this._sockets.invites = socket.subscribe({
 					task: 'invite',
 					userID: this._bot.user._id
 				}, async function(data) {
-					this._listeners.invites.forEach(async (listener) => {
+					if (!data.Name) return;
+
+					_listeners.invites.forEach(async (listener) => {
 						listener(await new Classes.GroupInvite({ data }))
 					})
 				})
