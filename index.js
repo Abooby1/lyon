@@ -21,6 +21,12 @@ export class Client {
 
 		this._auth = `${userid};${token}`;
 		this._bot = null;
+		this._listeners = {
+			invites: new Array()
+		}
+		this._sockets = {
+			invites: null
+		};
 		Clients[userid] = this;
 
 		if(config) {
@@ -37,6 +43,15 @@ export class Client {
 
 			if(code == 200) {
 				this._bot = JSON.parse(response)
+				
+				this._sockets.invites = socket.subscribe({
+					task: 'invite',
+					userID: this._bot.user._id
+				}, async function(data) {
+					this._listeners.invites.forEach(async (listener) => {
+						listener(await new Classes.GroupInvite({ data }))
+					})
+				})
 			} else {
 				throw new Error(`Error while fetching bot data: ${response}`)
 			}
@@ -89,7 +104,7 @@ export class Client {
 		})
 	}
 	async onInvite(callback) {
-		//
+		this._listeners.invites.push(callback)
 	}
 
 	async createGroup(dataObj) {
