@@ -84,7 +84,7 @@ export class Client {
 					auth: ClientAuth
 				}
 			}).then(async (response) => {
-					res(await new Classes.Post({ id: response.data }))
+					res(await new Classes.Post({ data: response.data }))
 				}).catch(response => {
 				res(response.response.data)
 			})
@@ -118,7 +118,7 @@ export class Client {
 
 	async getPosts(dataObj) {
 		let data = { ...dataObj }
-		let url = 'posts';
+		let url = 'posts/get';
 		if(data.postid) {
 			url += `?postid=${data.postid}`;
 		} else if(data.userid) {
@@ -256,10 +256,12 @@ export class Client {
 	async getBlocked() {
 		if(!this._bot) return 'Bot is not logged in.';
 
-		return this._bot.user.BlockedUsers.map(async (user) => {
-			let formattedUser = await new Classes.User({ id: user })
+		return new Promise(async (res) => {
+			res(this._bot.user.BlockedUsers.map(async (user) => {
+			 	let formattedUser = await new Classes.User({ id: user })
 
-			return formattedUser
+			 	return formattedUser
+		 	}))
 		})
 	}
 	async getInvites() {
@@ -308,12 +310,12 @@ export class Client {
 	}
 
 	async deletePost(id) {
-		let [_, response] = await Utils.request('DELETE', `posts?postid=${id}`)
+		let [_, response] = await Utils.request('DELETE', `posts/edit/delete?postid=${id}`)
 
 		return response;
 	}
 	async deleteChat(id) {
-		let [_, response] = await Utils.request('DELETE', `chats?chatid=${id}`)
+		let [_, response] = await Utils.request('DELETE', `chats/delete?chatid=${id}`)
 
 		return response;
 	}

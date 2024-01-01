@@ -16,7 +16,7 @@ export class Post {
 				res(this)
 			}
 
-			let url = 'posts';
+			let url = 'posts/get';
 			if(this._data.id) {
 				url += `?postid=${this._data.id}`;
 			} else if(this._data.userid) {
@@ -153,7 +153,7 @@ export class Post {
 	async delete() {
 		if(!this._init) return;
 
-		let [_, response] = await Utils.request('DELETE', `posts/delete?postid=${this._response._id}`)
+		let [_, response] = await Utils.request('DELETE', `posts/edit/delete?postid=${this._response._id}`)
 		return response;
 	}
 
@@ -173,13 +173,13 @@ export class Post {
 	async pin() {
 		if(!this._init) return;
 
-		let [_, response] = await Utils.request('PUT', `posts/pin?postid=${this._response._id}`)
+		let [_, response] = await Utils.request('PUT', `posts/edit/pin?postid=${this._response._id}`)
 		return response;
 	}
 	async unpin() {
 		if(!this._init) return;
 
-		let [_, response] = await Utils.request('DELETE', `posts/unpin?postid=${this._response._id}`)
+		let [_, response] = await Utils.request('DELETE', `posts/edit/unpin?postid=${this._response._id}`)
 		return response;
 	}
 
