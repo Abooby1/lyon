@@ -3,11 +3,11 @@ A smart Photop Client made by @Abooby! Use it to make Photop bots that interacts
 
 # Redirects
 * Clients (*)
-* [Changelog]()
-* [Posts (incomplete)]()
-* [Chats (incomplete)]()
-* [Users (incomplete)]()
-* [Groups (incomplete)]()
+* [Changelog](https://github.com/Abooby1/lyon/blob/main/Docs/changelog.md)
+* [Posts (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/posts.md)
+* [Chats (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/chats.md)
+* [Users (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/users.md)
+* [Groups (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/groups.md)
 
 # Client Class
 * The client class is the most important class needed for the bot.

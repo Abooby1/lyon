@@ -4,9 +4,9 @@
 * Fixed requests for new Photop update.
 
 # Redirects
-* [Client]()
+* [Client](https://github.com/Abooby1/lyon/blob/main/README.md)
 * Changelog (*)
-* [Posts (incomplete)]()
-* [Chats (incomplete)]()
-* [Users (incomplete)]()
-* [Groups (incomplete)]()
+* [Posts (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/posts.md)
+* [Chats (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/chats.md)
+* [Users (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/users.md)
+* [Groups (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/groups.md)
