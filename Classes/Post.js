@@ -8,6 +8,10 @@ export class Post {
 		this._data = data;
 		this._init = null;
 
+		// Extra data
+		this._hasPoll = null;
+		//
+
 		return new Promise(async (res) => {
 			if(this._data.data) {
 				this._init = true;
@@ -42,7 +46,12 @@ export class Post {
 
 			if(this._code == 200) {
 				this._response = JSON.parse(response).posts[0];
+				this._fullResponse = JSON.parse(response)
 				this._init = true;
+
+				if(this._response.Media && this._response.Media.Poll) {
+					this._hasPoll = true;
+				}
 			} else {
 				console.error(`Post class errored: ${response}`)
 			}
@@ -120,6 +129,10 @@ export class Post {
 		return true;
 	}
 
+	async disconnect(listener) {
+		//
+	}
+
 	async chat(text) {
 		if(!this._init) return;
 
@@ -183,7 +196,107 @@ export class Post {
 		return response;
 	}
 
+	async poll() {
+		if(!this._init || !this._hasPoll) return;
+
+		return new Promise(async (res) => {
+			res(new PostPoll({
+				data: {
+					_id: this._response._id,
+					...this._response.Media.Poll,
+					...this._fullResponse.polls[this._response._id]
+				}
+			}))
+		})
+	}
+
 	async report() {
 		//
+	}
+}
+
+export class PostPoll {
+	constructor(dataObj) {
+		let data = { ...dataObj }
+		this._data = data;
+		this._init = null;
+
+		if(this._data.data) {
+			this._response = this._data.data;
+			this._init = true;
+		}
+
+		return this;
+	}
+
+	get title() {
+		if(!this._init) return;
+
+		return this._response.Title;
+	}
+	get options() {
+		if(!this._init) return;
+
+		return this._response.Options;
+	}
+	get votes() {
+		if(!this._init) return;
+
+		return this._response.Votes;
+	}
+	get totalVotes() {
+		if(!this._init) return;
+
+		return this._response.FullVotes;
+	}
+
+	async onVote(callback) {
+		if(!this._init) return;
+
+		Listeners.addPost({ id: this._response._id, type: 'pollvote', callback })
+		return true;
+	}
+
+	async vote(option) {
+		if(!this._init) return;
+
+		return new Promise(async (res) => {
+			let [_, response] = await Utils.request('POST', `posts/vote?postid=${this._response._id}`, {
+				Vote: option
+			})
+
+			res(response)
+		})
+	}
+}
+export class PollVote {
+	constructor(dataObj) {
+		let data = { ...dataObj }
+		this._data = data;
+		this._init = null;
+
+		if(this._data.data) {
+			this._response = this._data.data;
+			this._init = true;
+		}
+
+		return this;
+	}
+
+	get vote() {
+		if(!this._init) return;
+
+		return this._response.vote;
+	}
+	get change() {
+		if(!this._init) return;
+
+		return this._response.change;
+	}
+
+	async author() {
+		if(!this._init) return;
+
+		return await new User({ id: this._response.userID })
 	}
 }

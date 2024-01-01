@@ -69,12 +69,17 @@ export class Client {
 		})
 	}
 
-	async post(text, groupid, images = []) {
+	async post(text, data) {
 		if(!text || text.length == 0) return 'Text is needed.';
+		data = { ...data };
+		
+		let images = data.images || [];
+		let groupid = data.groupid;
+		let poll = data.poll;
 
 		return new Promise(async (res, rej) => {
 			let formData = new FormData()
-			formData.append('data', JSON.stringify({ text }))
+			formData.append('data', JSON.stringify({ text, poll }))
 			for(let i=0;i<images.length;i++) {
 				formData.append(`image${i}`, fs.createReadStream(images[i]))
 			}
@@ -258,10 +263,10 @@ export class Client {
 
 		return new Promise(async (res) => {
 			res(this._bot.user.BlockedUsers.map(async (user) => {
-			 	let formattedUser = await new Classes.User({ id: user })
+				let formattedUser = await new Classes.User({ id: user })
 
-			 	return formattedUser
-		 	}))
+				return formattedUser
+			}))
 		})
 	}
 	async getInvites() {

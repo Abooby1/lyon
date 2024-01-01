@@ -126,13 +126,17 @@ export class Group {
 		})
 	}
 
-	async post(text, images = []) {
+	async post(text, data) {
 		if(!this._init) return;
 		if(!text || text.length == 0) return 'Text is needed.';
+		data = { ...data };
+
+		let images = data.images || [];
+		let poll = data.poll;
 
 		return new Promise(async (res, rej) => {
 			let formData = new FormData()
-			formData.append('data', JSON.stringify({ text }))
+			formData.append('data', JSON.stringify({ text, poll }))
 			for(let i=0;i<images.length;i++) {
 				formData.append(`image${i}`, fs.createReadStream(images[i]))
 			}

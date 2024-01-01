@@ -15,7 +15,8 @@ let callbacks = {// id: callback
 		new: new Array(),
 		chats: new Object(),
 		deletes: new Object(),
-		edits: new Object()
+		edits: new Object(),
+		votes: new Object()
 	},
 	chat: {
 		deletes: new Object(),
@@ -191,18 +192,21 @@ export async function addPost({ id, type, callback, groupid }) {
 		return;
 	}
 
-	if(type == 'deleted' || type == 'edited') {
+	if(type == 'deleted' || type == 'edited' || type == 'pollvote') {
 		if(type == 'deleted') {
 			callbacks.post.deletes[id] = callback;
 		} else if(type == 'edited') {
 			callbacks.post.edits[id] = callback;
+		} else if(type == 'pollvote') {
+			callbacks.post.votes[id] = callback;
 		}
 
 		let deletedIds = Object.keys(callbacks.post.deletes)
 		let editedIds = Object.keys(callbacks.post.edits)
+		let pollIds = Object.keys(callbacks.post.votes)
 		let query = {
 			task: 'post',
-			_id: [...new Set([...deletedIds, ...editedIds])]
+			_id: [...new Set([...deletedIds, ...editedIds, ...pollIds])]
 		}
 
 		if(!listeners.postActions) {
@@ -220,6 +224,12 @@ export async function addPost({ id, type, callback, groupid }) {
 							editCallback({ id: data._id, text: data.text })
 						}
 						break;
+					case 'vote':
+						let voteCallback = callbacks.post.votes[data._id];
+						if(voteCallback) {
+							voteCallback(await new Classes.PollVote({ data }))
+						}
+						break;
 				}
 			})
 		} else {
@@ -231,6 +241,10 @@ export async function addPost({ id, type, callback, groupid }) {
 }
 export function addGroup({ id, type, callback }) {
 	//
+}
+
+export function removePost({ listener, type }) {
+	//	
 }
 
 socket.remotes.stream = socketFunction;
