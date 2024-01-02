@@ -9,9 +9,9 @@ A smart Photop Client made by @Abooby! Use it to make Photop bots that interacts
 * [Users (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/users.md)
 * [Groups (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/groups.md)
 
-# Branches
-* [Stable Branch](https://www.npmjs.com/package/lyon)
-* [Unstable Branch](https://github.com/Abooby1/lyon)
+# Builds
+* [Stable Build](https://www.npmjs.com/package/lyon)
+* [Unstable Build](https://github.com/Abooby1/lyon)
 
 # Client Class
 * The client class is the most important class needed for the bot.
