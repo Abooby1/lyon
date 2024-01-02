@@ -128,8 +128,8 @@ export class Group {
 
 	async post(text, data) {
 		if(!this._init) return;
-		if(!text || text.length == 0) return 'Text is needed.';
 		data = { ...data };
+		if((!text || text.length == 0) && !(data.images || data.poll)) return 'Text is needed.';
 
 		let images = data.images || [];
 		let poll = data.poll;

@@ -224,6 +224,10 @@ export class PostPoll {
 		if(this._data.data) {
 			this._response = this._data.data;
 			this._init = true;
+
+			if(this._response.HasVoted > -1) {
+				this._hasVoted = true;
+			}
 		}
 
 		return this;
@@ -249,6 +253,11 @@ export class PostPoll {
 
 		return this._response.FullVotes;
 	}
+	get alreadyVoted() {
+		if(!this._init) return;
+
+		return this._hasVoted;
+	}
 
 	async onVote(callback) {
 		if(!this._init) return;
@@ -261,9 +270,17 @@ export class PostPoll {
 		if(!this._init) return;
 
 		return new Promise(async (res) => {
-			let [_, response] = await Utils.request('POST', `posts/vote?postid=${this._response._id}`, {
+			let [code, response] = await Utils.request('POST', `posts/vote?postid=${this._response._id}`, {
 				Vote: option
 			})
+
+			if(code == 200) {
+				if(this._hasVoted) {
+					this._hasVoted = false;
+				} else {
+					this._hasVoted = true;
+				}
+			}
 
 			res(response)
 		})

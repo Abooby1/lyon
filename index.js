@@ -70,9 +70,9 @@ export class Client {
 	}
 
 	async post(text, data) {
-		if(!text || text.length == 0) return 'Text is needed.';
 		data = { ...data };
-		
+		if((!text || text.length == 0) && !(data.images || data.poll)) return 'Text is needed.';
+
 		let images = data.images || [];
 		let groupid = data.groupid;
 		let poll = data.poll;
@@ -89,8 +89,12 @@ export class Client {
 					auth: ClientAuth
 				}
 			}).then(async (response) => {
-					res(await new Classes.Post({ data: response.data }))
-				}).catch(response => {
+				res(await new Classes.Post({ data: response.data }))
+			}).catch(response => {
+				if(!response.response) {
+					res(response.cause)
+					return;
+				}
 				res(response.response.data)
 			})
 		})
