@@ -1,11 +1,13 @@
-# v0.1.1
-* Added suppot for Polls.
+# v0.1.2
+* Added docs for Post class.
+* Added docs for Poll classes.
+* Added docs for User class.
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)
 * Changelog (*)
-* [Posts (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/posts.md)
+* [Posts](https://github.com/Abooby1/lyon/blob/main/Docs/posts.md)
 * [Chats (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/chats.md)
-* [Users (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/users.md)
+* [Users](https://github.com/Abooby1/lyon/blob/main/Docs/users.md)
 * [Groups (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/groups.md)
-* [Polls (incomplete)](https://github.com/Abooby1/lyon/blob/main/Docs/polls.md)
+* [Polls](https://github.com/Abooby1/lyon/blob/main/Docs/polls.md)
