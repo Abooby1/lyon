@@ -135,7 +135,7 @@ export class Post {
 		try {
 			let [type, callback] = listener;
 
-			Listeners.removePost({ callback, type, contentid: this._response._id, groupid: this._groupid })
+			Listeners.removeListener({ callback, type, contentid: this._response._id, groupid: this._groupid })
 			return true;
 		} catch(err) {
 			console.error(`Listener given is invalid: ${listener}`)
@@ -282,7 +282,7 @@ export class PostPoll {
 		try {
 			let [type, callback] = listener;
 
-			Listeners.removePost({ callback, type, postid: this._response._id, groupid: this._groupid })
+			Listeners.removeListener({ callback, type, contentid: this._response._id, groupid: this._groupid })
 			return true;
 		} catch(err) {
 			console.error(`Listener given is invalid: ${listener}`)
