@@ -33,7 +33,8 @@ const client = await new Client({
 ```
 
 ## Client Parameters
-* `client.post("text", "groupid", ["images"])` - Post into the home page. If groupid given, post into the group.
+* `client.post("text", {object})` - Post into the home page. If groupid given, post into the group.
+	* {object} - { images: {array}, poll: { title: "{string}", options: {array} }, groupid: "{string}" }
 * `client.onPost({function}, {optional_object})` - Listen for posts.
   * {optional_object} - { groupid: "{string}" }
 * `client.onInvite({function})` - Listen for group invites.
