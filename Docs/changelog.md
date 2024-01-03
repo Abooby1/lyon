@@ -1,7 +1,5 @@
-# v0.1.2
-* Added docs for Post class.
-* Added docs for Poll classes.
-* Added docs for User class.
+# v0.1.3
+* Added Post.disconnect()
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

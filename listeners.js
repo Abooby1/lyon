@@ -243,8 +243,21 @@ export function addGroup({ id, type, callback }) {
 	//
 }
 
-export function removePost({ listener, type }) {
-	//	
+export function removePost({ callback, type, postid, groupid }) {
+	if(type == 'chat') {
+		if(groupid) {
+			delete callbacks.post.chats[`${postid};${groupid}`];
+		} else {
+			delete callbacks.post.chats[postid];
+		}
+	}
+
+	if(type == 'edit') {
+		delete callbacks.post.edits[postid];
+	}
+	if(type == 'delete') {
+		delete callbacks.post.deletes[postid];
+	}
 }
 
 socket.remotes.stream = socketFunction;

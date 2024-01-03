@@ -116,21 +116,29 @@ export class Post {
 	async onChat(callback) {
 		Listeners.addPost({ id: this._response._id, type: 'newchat', callback, groupid: this._groupid })
 
-		return true;
+		return ['chat', callback];
 	}
 	async onDelete(callback) {
 		Listeners.addPost({ id: this._response._id, type: 'deleted', callback })
 
-		return true;
+		return ['delete', callback];
 	}
 	async onEdit(callback) {
 		Listeners.addPost({ id: this._response._id, type: 'edited', callback })
 
-		return true;
+		return ['edit', callback];
 	}
 
 	async disconnect(listener) {
-		//
+		if(typeof listener != 'object') return;
+
+		try {
+			let [type, callback] = listener;
+
+			Listeners.removePost({ callback, type, postid: this._response._id, groupid: this._groupid })
+		} catch(err) {
+			console.error(`Listener given is invalid: ${listener}`)
+		}
 	}
 
 	async chat(text) {
