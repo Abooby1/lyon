@@ -243,20 +243,50 @@ export function addGroup({ id, type, callback }) {
 	//
 }
 
-export function removePost({ callback, type, postid, groupid }) {
-	if(type == 'chat') {
-		if(groupid) {
-			delete callbacks.post.chats[`${postid};${groupid}`];
-		} else {
-			delete callbacks.post.chats[postid];
+export function removeListener({ callback, type, contentid, groupid }) {
+	if(type.endsWith(';post')) {
+		type = type.split(';')[0];
+		
+		if(type == 'chat') {
+			if(groupid) {
+				delete callbacks.post.chats[`${contentid};${groupid}`];
+			} else {
+				delete callbacks.post.chats[contentid];
+			}
+
+			return;
+		}
+
+		if(type == 'edit') {
+			delete callbacks.post.edits[contentid];
+
+			return;
+		}
+		if(type == 'delete') {
+			delete callbacks.post.deletes[contentid];
+
+			return;
+		}
+		if(type == 'vote') {
+			delete callbacks.post.votes[contentid];
+
+			return;
 		}
 	}
 
-	if(type == 'edit') {
-		delete callbacks.post.edits[postid];
-	}
-	if(type == 'delete') {
-		delete callbacks.post.deletes[postid];
+	if(type.endsWith(';chat')) {
+		type = type.split(';')[0];
+
+		if(type == 'edit') {
+			delete callbacks.chat.edits[contentid];
+
+			return;
+		}
+		if(type == 'delete') {
+			delete callbacks.chat.deletes[contentid];
+
+			return;
+		}
 	}
 }
 

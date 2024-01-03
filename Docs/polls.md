@@ -17,6 +17,8 @@
 	* {function} - Function that will be called when the poll is voted on.
 * `Poll.vote({number})` - Cast a vote on the poll.
 	* {number} - The index (0-3) of the option youre voting.
+* `Poll.disconnect({array})` - Disconect a listener.
+	* {array} - The array any poll listener param returns.
 
 # Poll Vote Parameters
 * `Poll.vote` - Get the vote number.

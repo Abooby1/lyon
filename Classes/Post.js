@@ -116,17 +116,17 @@ export class Post {
 	async onChat(callback) {
 		Listeners.addPost({ id: this._response._id, type: 'newchat', callback, groupid: this._groupid })
 
-		return ['chat', callback];
+		return ['chat;post', callback];
 	}
 	async onDelete(callback) {
 		Listeners.addPost({ id: this._response._id, type: 'deleted', callback })
 
-		return ['delete', callback];
+		return ['delete;post', callback];
 	}
 	async onEdit(callback) {
 		Listeners.addPost({ id: this._response._id, type: 'edited', callback })
 
-		return ['edit', callback];
+		return ['edit;post', callback];
 	}
 
 	async disconnect(listener) {
@@ -135,7 +135,7 @@ export class Post {
 		try {
 			let [type, callback] = listener;
 
-			Listeners.removePost({ callback, type, postid: this._response._id, groupid: this._groupid })
+			Listeners.removePost({ callback, type, contentid: this._response._id, groupid: this._groupid })
 			return true;
 		} catch(err) {
 			console.error(`Listener given is invalid: ${listener}`)
@@ -273,7 +273,21 @@ export class PostPoll {
 		if(!this._init) return;
 
 		Listeners.addPost({ id: this._response._id, type: 'pollvote', callback })
-		return true;
+		return ['vote;post', callback];
+	}
+
+	async disconnect(listener) {
+		if(typeof listener != 'object') return;
+
+		try {
+			let [type, callback] = listener;
+
+			Listeners.removePost({ callback, type, postid: this._response._id, groupid: this._groupid })
+			return true;
+		} catch(err) {
+			console.error(`Listener given is invalid: ${listener}`)
+			return;
+		}
 	}
 
 	async vote(option) {

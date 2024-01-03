@@ -1,5 +1,7 @@
 # v0.1.3
 * Added Post.disconnect()
+* Added Poll.disconnect()
+* Added Chat.disconnect()
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

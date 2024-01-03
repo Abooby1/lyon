@@ -6,4 +6,3 @@
 * [Users](https://github.com/Abooby1/lyon/blob/main/Docs/users.md)
 * Groups (*)
 * [Polls](https://github.com/Abooby1/lyon/blob/main/Docs/polls.md)
-* 
