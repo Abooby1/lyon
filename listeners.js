@@ -246,7 +246,7 @@ export function addGroup({ id, type, callback }) {
 export function removeListener({ callback, type, contentid, groupid }) {
 	if(type.endsWith(';post')) {
 		type = type.split(';')[0];
-		
+
 		if(type == 'chat') {
 			if(groupid) {
 				delete callbacks.post.chats[`${contentid};${groupid}`];
@@ -293,11 +293,11 @@ export function removeListener({ callback, type, contentid, groupid }) {
 		type = type.split(';')[0];
 
 		if(type == 'newpost') {
-			let data = contentid;
+			let data = callback;
 			if(groupid) {
-				data = [contentid, groupid];
+				data = [callback, groupid];
 			}
-			
+
 			callbacks.post.new.splice(callbacks.post.new.indexOf(data), 1);
 			return;
 		}
