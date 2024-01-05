@@ -189,7 +189,21 @@ export class Group {
 	async onPost(callback) {
 		Listeners.addPost({ type: 'newpost', callback, groupid: this._response._id })
 
-		return true;
+		return ['newpost;main', callback];
+	}
+
+	async disconnect(listener) {
+		if(typeof listener != 'object') return;
+
+		try {
+			let [type, callback] = listener;
+
+			Listeners.removeListener({ callback, type, contentid: this._response._id, groupid: this._groupid })
+			return true;
+		} catch(err) {
+			console.error(`Listener given is invalid: ${listener}`)
+			return;
+		}
 	}
 }
 

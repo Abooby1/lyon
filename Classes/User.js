@@ -181,7 +181,7 @@ export class User {
 		})
 	}
 
-	async ban() {
+	async ban({ length, reason, terminate }) {
 		if(!this._init) return;
 
 		return new Promise(async (res) => {
@@ -192,9 +192,13 @@ export class User {
 				})
 
 				res(response)
+				return;
 			}
 
-			//normal banning
+			let [_, response] = await Utils.request('DELETE', `mod/ban?userid=${this._response._id}`, {
+				length, reason, terminate
+			})
+			res(response)
 		})
 	}
 	async report() {

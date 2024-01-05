@@ -69,6 +69,12 @@ export class Client {
 		})
 	}
 
+	get selfData() {
+		if(!this._bot) return;
+		
+		return this._bot.user;
+	}
+
 	async post(text, data) {
 		data = { ...data };
 		if((!text || text.length == 0) && !(data.images || data.poll)) return 'Text is needed.';
@@ -109,20 +115,39 @@ export class Client {
 				groupid: data.groupid
 			})
 
-			return;
+			return ['newpost;main', callback, data.groupid];
 		}
 
 		Listeners.addPost({
 			type: 'newpost',
 			callback
 		})
+
+		return ['newpost;main', callback];
 	}
 	async onInvite(callback) {
 		this._listeners.invites.push(callback)
+
+		return ['invite', callback];
 	}
 
-	async createGroup(dataObj) {
-		//
+	async disconnect(listener) {
+		if(typeof listener != 'object') return;
+
+		try {
+			let [type, callback, groupid] = listener;
+			if(type == 'invite') {
+				this._listeners.invites.splice(this._listeners.invites.indexOf(callback), 1)
+				
+				return true;
+			}
+
+			Listeners.removeListener({ callback, type, contentid: this._response._id, groupid })
+			return true;
+		} catch(err) {
+			console.error(`Listener given is invalid: ${listener}`)
+			return;
+		}
 	}
 
 	async getPosts(dataObj) {
@@ -226,6 +251,7 @@ export class Client {
 		})
 	}
 	async getGroups(dataObj) {
+		if(!this._bot) return;
 		let data = { ...dataObj }
 		let url = 'groups';
 
@@ -292,7 +318,24 @@ export class Client {
 		})
 	}
 
+	async createGroup({ name, invite, image }) {
+		if(!this._bot) return;
+
+		let form = new FormData()
+		form.append('data', JSON.stringify({ name, invite }))
+		if(image) {
+			form.append('image', fs.createReadStream(image))
+		}
+
+		let [code, response] = await Utils.request('POST', `groups/new`, form)
+		if(code == 200) {
+			return await new Classes.Group({ id: response })
+		} else {
+			return response;
+		}
+	}
 	async joinGroup(dataObj) {
+		if(!this._bot) return;
 		let data = { ...dataObj }
 		let url = 'groups/join';
 
@@ -309,6 +352,7 @@ export class Client {
 		})
 	}
 	async leaveGroup(groupid) {
+		if(!this._bot) return;
 		let url = `groups/leave?groupid=${groupid}`;
 
 		return new Promise(async (res) => {
@@ -319,17 +363,20 @@ export class Client {
 	}
 
 	async deletePost(id) {
+		if(!this._bot) return;
 		let [_, response] = await Utils.request('DELETE', `posts/edit/delete?postid=${id}`)
 
 		return response;
 	}
 	async deleteChat(id) {
+		if(!this._bot) return;
 		let [_, response] = await Utils.request('DELETE', `chats/delete?chatid=${id}`)
 
 		return response;
 	}
 
 	async updateBio(newBio) {
+		if(!this._bot) return;
 		return new Promise(async (res) => {
 			let [_, response] = await Utils.request('POST', 'me/settings', {
 				update: 'description',
@@ -340,6 +387,7 @@ export class Client {
 		})
 	}
 	async updateName(newName) {
+		if(!this._bot) return;
 		return new Promise(async (res) => {
 			let [_, response] = await Utils.request('POST', 'me/settings', {
 				update: 'username',
@@ -350,6 +398,7 @@ export class Client {
 		})
 	}
 	async updateVisibility(newVisibility) {
+		if(!this._bot) return;
 		return new Promise(async (res) => {
 			let [_, response] = await Utils.request('POST', 'me/settings', {
 				update: 'visibility',
@@ -360,6 +409,7 @@ export class Client {
 		})
 	}
 	async updatePicture(newPicture) {
+		if(!this._bot) return;
 		let form = new FormData()
 		form.append('image', fs.createReadStream(newPicture))
 
@@ -376,6 +426,7 @@ export class Client {
 		})
 	}
 	async updateBanner(newBanner) {
+		if(!this._bot) return;
 		let form = new FormData()
 		form.append('image', fs.createReadStream(newBanner))
 
@@ -393,6 +444,7 @@ export class Client {
 	}
 
 	async unban(userid) {
+		if(!this._bot) return;
 		let [_, response] = await Utils.request('PATCH', `mod/unban?userid=${userid}`)
 
 		return response;

@@ -1,6 +1,9 @@
-# v0.1.4
-* Added Chat class docs.
-* Added Group class docs.
+# v0.1.5
+* Added Client.selfData
+* Added Client.createGroup()
+* Added Client.disconnect()
+* Added Group.disconnect()
+* Added User.ban()
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

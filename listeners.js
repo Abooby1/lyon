@@ -288,6 +288,20 @@ export function removeListener({ callback, type, contentid, groupid }) {
 			return;
 		}
 	}
+
+	if(type.endsWith(';main')) {
+		type = type.split(';')[0];
+
+		if(type == 'newpost') {
+			let data = contentid;
+			if(groupid) {
+				data = [contentid, groupid];
+			}
+			
+			callbacks.post.new.splice(callbacks.post.new.indexOf(data), 1);
+			return;
+		}
+	}
 }
 
 socket.remotes.stream = socketFunction;
