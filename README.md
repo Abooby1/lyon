@@ -1,5 +1,6 @@
 # Lyon
 A smart Photop Client made by @Abooby! Use it to make Photop bots that interacts with a fun community!
+Make sure to join the [Lyon Group](https://app.photop.live/?j=ebe4376e) to get extra help, report bugs, or suggest features!
 
 # Redirects
 * Clients (*)

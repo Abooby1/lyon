@@ -2,10 +2,11 @@ import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
 import * as Classes from './index.js'
 
-import { CurrentClient } from '../index.js'
+import { CurrentClient, ClientAuth } from '../index.js'
 
 import FormData from 'form-data'
 import fs from 'fs'
+import axios from 'axios'
 
 export class Group {
 	constructor(dataObj) {
