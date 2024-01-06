@@ -71,7 +71,7 @@ export class Client {
 
 	get selfData() {
 		if(!this._bot) return;
-		
+
 		return this._bot.user;
 	}
 
@@ -90,7 +90,7 @@ export class Client {
 				formData.append(`image${i}`, fs.createReadStream(images[i]))
 			}
 
-			axios.post(`https://photop.exotek.co/posts/new${groupid?`?group=${groupid}`:''}`, formData, {
+			axios.post(`https://photop.exotek.co/posts/new${groupid?`?groupid=${groupid}`:''}`, formData, {
 				headers: {
 					auth: ClientAuth
 				}
@@ -138,7 +138,7 @@ export class Client {
 			let [type, callback, groupid] = listener;
 			if(type == 'invite') {
 				this._listeners.invites.splice(this._listeners.invites.indexOf(callback), 1)
-				
+
 				return true;
 			}
 

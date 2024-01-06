@@ -142,7 +142,7 @@ export class Group {
 				formData.append(`image${i}`, fs.createReadStream(images[i]))
 			}
 
-			axios.post(`https://photop.exotek.co/posts/new?group=${this._response._id}`, formData, {
+			axios.post(`https://photop.exotek.co/posts/new?groupid=${this._response._id}`, formData, {
 				headers: {
 					auth: ClientAuth
 				}
