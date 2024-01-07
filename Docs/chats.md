@@ -24,4 +24,5 @@
 	* {function} - The function called when the chat is edited.
 * `Chat.disconnect({array})` - Disconnect a listener.
 	* {array} - Array given from a listener.
-* `Chat.report()` - Report the chat. (incomplete)
+* `Chat.report({object})` - Report the chat.
+	* {object} - { reason: {string}, report: {string} }

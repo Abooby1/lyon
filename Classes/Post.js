@@ -220,8 +220,13 @@ export class Post {
 		})
 	}
 
-	async report() {
-		//
+	async report({ reason, report }) {
+		if(!this._init) return;
+
+		let [_, response] = await Utils.request('PUT', `mod/report?contentid=${this._response._id}&type=post`, {
+			reason, report
+		})
+		return response;
 	}
 }
 

@@ -46,4 +46,5 @@ client.onPost(async (post) => {
 * `Post.pin()` - Pin the post.
 * `Post.unpin()` - Unpin the post.
 * `Post.poll()` - If the post has a poll, return the poll data.
-* `Post.report()` - Report the post. (incomplete)
+* `Post.report({object})` - Report the post.
+	* {object} - { reason: {string}, report: {string} }

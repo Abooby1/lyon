@@ -201,8 +201,13 @@ export class User {
 			res(response)
 		})
 	}
-	async report() {
-		//
+	async report({ reason, report }) {
+		if(!this._init) return;
+
+		let [_, response] = await Utils.request('PUT', `mod/report?contentid=${this._response._id}&type=user`, {
+			reason, report
+		})
+		return response;
 	}
 }
 

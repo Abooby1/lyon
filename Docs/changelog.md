@@ -1,9 +1,7 @@
-# v0.1.5
-* Added Client.selfData
-* Added Client.createGroup()
-* Added Client.disconnect()
-* Added Group.disconnect()
-* Added User.ban()
+# v0.1.6
+* Added User.report() - x
+* Added Chat.report() - x
+* Added Post.report() - x
 
 ## Bug Fixes
 * Client.post() would not post in group if groupid is defined.

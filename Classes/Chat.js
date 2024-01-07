@@ -144,7 +144,12 @@ export class Chat {
 		}
 	}
 
-	async report() {
-		//
+	async report({ reason, report }) {
+		if(!this._init) return;
+
+		let [_, response] = await Utils.request('PUT', `mod/report?contentid=${this._response._id}&type=chat`, {
+			reason, report
+		})
+		return response;
 	}
 }

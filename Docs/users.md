@@ -31,4 +31,5 @@
 	* Instance 1: If the user isnt in a group, a normal ban request will be sent. This will need the {object}
   * Instance 2: If the user is in a group, they will get banned from the group.
   * {object} - { length: {number} | "Permanent", reason: {string}, terminate: {boolean} }
-* `User.report()` - Report the user. (incomplete)
+* `User.report({object})` - Report the user.
+	* {object} - { reason: {string}, report: {string} }

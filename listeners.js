@@ -239,7 +239,8 @@ export async function addPost({ id, type, callback, groupid }) {
 		return;
 	}
 }
-export function addGroup({ id, type, callback }) {
+
+export function addListener({ type, contentid, groupid, callback }) {
 	//
 }
 
