@@ -1,11 +1,6 @@
-# v0.1.6
-* Added User.report()
-* Added Chat.report()
-* Added Post.report()
-
-## Bug Fixes
-* Client.post() would not post in group if groupid is defined.
-* ClientAuth variable was not defined in Group class.
+# v1.0
+* Lyon is fully out!
+* Lyon site has been released. Check it out in: https://abooby1.github.io/LyonSite/
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)
