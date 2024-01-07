@@ -38,9 +38,9 @@ const Client = await new Client({
 * `Client.post({string}, {object})` - Post into the home page. If groupid given, post into the group.
 	* {string} - Text of the post
   * {object} - { images: {array}, poll: { title: {string}, options: {array} }, groupid: {string} }
-* `Client.onPost({function}, {optional_object})` - Listen for posts.
+* `Client.onPost({function}, {object})` - Listen for posts.
 	* {function} - The function called when a new post is created.
-  * {optional_object} - { groupid: {string} }
+  * {object} - { groupid: {string} }
 * `Client.onInvite({function})` - Listen for group invites.
 	* {function} - The function called when your invited to a group.
 * `Client.getPosts({object})` - Get an array of posts with terms.
@@ -57,12 +57,21 @@ const Client = await new Client({
 	* {object} - { name: {string}, invite: {string}, image: {directory} }
 * `Client.joinGroup({object})` - Join a group.
 	* {object} - { groupid: {string}, code: {string} }
-* `Client.leaveGroup(groupid)` - Leave a group with a groupid.
-* `Client.deletePost(postid)` - Delete a post with a postid.
-* `Client.deleteChat(chatid)` - Delete a chat with a chatid.
-* `Client.updateBio(newBio)` - Update your bio.
-* `Client.updateName(newName)` - Update your name.
-* `Client.updateVisibility(newVisibility)` - Update your visibility.
-* `Client.updatePicture(newPicture)` - Update your profile picture.
-* `Client.updateBanner(newBanner)` - Update your profile banner.
-* `Client.unban(userid)` - Unban a user.
+* `Client.leaveGroup({string})` - Leave a group.
+	* {string} - GroupID.
+* `Client.deletePost({string})` - Delete a post.
+	* {string} - PostID.
+* `Client.deleteChat({string})` - Delete a chat.
+	* {string} - ChatID.
+* `Client.updateBio({string})` - Update your bio.
+	* {string} - New bio.
+* `Client.updateName({string})` - Update your name.
+	* {string} - New name.
+* `Client.updateVisibility({string})` - Update your visibility.
+	* {string} - New visibility.
+* `Client.updatePicture({string})` - Update your profile picture.
+	* {string} - Directory to new profile picture.
+* `Client.updateBanner({string})` - Update your profile banner.
+	* {string} - Directory to new banner.
+* `Client.unban({string})` - Unban a user.
+	* {string} - UserID.

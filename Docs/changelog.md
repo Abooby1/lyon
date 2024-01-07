@@ -1,6 +1,5 @@
 # v1.0
-* Lyon is fully out!
-* Lyon site has been released. Check it out in: https://abooby1.github.io/LyonSite/
+* Lyon is fully released!
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

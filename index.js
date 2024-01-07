@@ -11,8 +11,7 @@ import { socket } from './listeners.js'
 export var ClientAuth;
 export var CurrentClient;
 export var Config = {
-	GroupConnections: true,
-	LyonStats: false
+	GroupConnections: true
 }
 
 export class Client {

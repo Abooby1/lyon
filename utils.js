@@ -23,39 +23,5 @@ export async function request(method, url, body, auth, contentType = "applicatio
 
 		let response = await fetch('https://photop.exotek.co/' + url, data);
 		resolve([response.status, await response.text()])
-
-		if(Config.LyonStats) {
-			if(url.startsWith('posts/new')) {
-				try{
-					axios({
-						method: 'POST',
-						url: 'https://lyonbackend.cyclic.app/statistics/add?type=posts',
-						headers: {
-							bottoken: ClientAuth
-						}
-					})
-				}catch{}
-			} else if(url.startsWith('chats/new')) {
-				try{
-					axios({
-						method: 'POST',
-						url: 'https://lyonbackend.cyclic.app/statistics/add?type=chats',
-						headers: {
-							bottoken: ClientAuth
-						}
-					})
-				}catch{}
-			}
-
-			try{
-				axios({
-					method: 'POST',
-					url: 'https://lyonbackend.cyclic.app/statistics/add?type=fetches',
-					headers: {
-						bottoken: ClientAuth
-					}
-				})
-			}catch{}
-		}
 	})
 }
