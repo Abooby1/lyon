@@ -1,7 +1,7 @@
 # v0.1.6
-* Added User.report() - x
-* Added Chat.report() - x
-* Added Post.report() - x
+* Added User.report()
+* Added Chat.report()
+* Added Post.report()
 
 ## Bug Fixes
 * Client.post() would not post in group if groupid is defined.
