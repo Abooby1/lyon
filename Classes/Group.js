@@ -188,7 +188,7 @@ export class Group {
 	}
 
 	async onPost(callback) {
-		Listeners.addPost({ type: 'newpost', callback, groupid: this._response._id })
+		Listeners.addListener({ type: 'newpost;post', callback, groupid: this._response._id })
 
 		return ['newpost;main', callback];
 	}

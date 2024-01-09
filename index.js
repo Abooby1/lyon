@@ -108,8 +108,8 @@ export class Client {
 	async onPost(callback, dataObj) {
 		let data = { ...dataObj }
 		if(data.groupid) {
-			Listeners.addPost({
-				type: 'newpost',
+			Listeners.addListener({
+				type: 'newpost;post',
 				callback,
 				groupid: data.groupid
 			})
@@ -117,8 +117,8 @@ export class Client {
 			return ['newpost;main', callback, data.groupid];
 		}
 
-		Listeners.addPost({
-			type: 'newpost',
+		Listeners.addListener({
+			type: 'newpost;post',
 			callback
 		})
 

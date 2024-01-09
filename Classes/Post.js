@@ -114,17 +114,17 @@ export class Post {
 	}
 
 	async onChat(callback) {
-		Listeners.addPost({ id: this._response._id, type: 'newchat', callback, groupid: this._groupid })
+		Listeners.addListener({ contentid: this._response._id, type: 'newchat;post', callback, groupid: this._groupid })
 
 		return ['chat;post', callback];
 	}
 	async onDelete(callback) {
-		Listeners.addPost({ id: this._response._id, type: 'deleted', callback })
+		Listeners.addListener({ contentid: this._response._id, type: 'deleted;post', callback })
 
 		return ['delete;post', callback];
 	}
 	async onEdit(callback) {
-		Listeners.addPost({ id: this._response._id, type: 'edited', callback })
+		Listeners.addListener({ contentid: this._response._id, type: 'edited;post', callback })
 
 		return ['edit;post', callback];
 	}
@@ -277,7 +277,7 @@ export class PostPoll {
 	async onVote(callback) {
 		if(!this._init) return;
 
-		Listeners.addPost({ id: this._response._id, type: 'pollvote', callback })
+		Listeners.addListener({ contentid: this._response._id, type: 'pollvote;post', callback })
 		return ['vote;post', callback];
 	}
 

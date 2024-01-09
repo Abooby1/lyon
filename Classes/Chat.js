@@ -120,12 +120,12 @@ export class Chat {
 	}
 
 	async onDelete(callback) {
-		Listeners.addChat({ type: 'deleted', id: this._response._id, groupid: this._response.GroupID, postid: this._response.PostID, callback })
+		Listeners.addListener({ type: 'deleted;chat', contentid: this._response._id, groupid: this._response.GroupID, postid: this._response.PostID, callback })
 
 		return ['delete;chat', callback];
 	}
 	async onEdit(callback) {
-		Listeners.addChat({ type: 'edited', id: this._response._id, groupid: this._response.GroupID, postid: this._response.PostID, callback })
+		Listeners.addListener({ type: 'edited;chat', contentid: this._response._id, groupid: this._response.GroupID, postid: this._response.PostID, callback })
 
 		return ['edit;chat', callback];
 	}
