@@ -10,6 +10,8 @@ const socketConfig = {
 }
 export const socket = new SimpleSocket(socketConfig)
 
+export var BackendCallbacks = new Array()
+
 let callbacks = {// id: callback
 	post: {
 		new: new Array(),
@@ -30,6 +32,10 @@ let listeners = {
 }
 let cache = {
 	groupSockets: new Object()
+}
+
+export async function addCache({ type, contentid, data }) {
+	//
 }
 
 async function socketFunction(data) {
@@ -145,6 +151,14 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 				query.userID = ClientAuth.split(';')[0];
 				query.token = ClientAuth;
 				query.groups = Object.keys(CurrentClient._bot.groups)
+
+				BackendCallbacks.push(function(type, data) {
+					if(type == 'join') {
+						query.groups.push(data)
+
+						listeners.post.edit(query)
+					}
+				})
 			}
 
 			if(listeners.post) {

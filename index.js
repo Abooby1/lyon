@@ -56,6 +56,23 @@ export class Client {
 						listener(await new Classes.GroupInvite({ data }))
 					})
 				})
+
+				this._sockets.account = socket.subscribe({
+					task: 'general',
+					location: `home${this._bot.user.Type || ''}`,
+					userID: this._bot.user._id,
+					token: ClientAuth
+				}, function(data) {
+					switch(data.type) {
+						case 'join':
+							CurrentClient.user.groups[data.data._id] = data.data;
+
+							Listeners.BackendCallbacks.forEach(callback => {
+								callback('join', data.data._id)
+							})
+							break;
+					}
+				})
 			} else {
 				throw new Error(`Error while fetching bot data: ${response}`)
 			}

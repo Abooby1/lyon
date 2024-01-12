@@ -1,5 +1,5 @@
-# v1.0
-* Lyon is fully released!
+# v1.0.1
+* Bug Fixes | Get more information in the Lyon Photop group.
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)
