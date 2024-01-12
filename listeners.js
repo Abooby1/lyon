@@ -96,7 +96,7 @@ function getChatConnects() {
 export async function addListener({ type, contentid, groupid, postid, callback }) {
 	if(type.endsWith(';chat')) {
 		type = type.split(';')[0];
-		
+
 		if(type == 'deleted') {
 			callbacks.chat.deletes[contentid] = { postid, callback };
 
@@ -151,20 +151,12 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 				query.userID = ClientAuth.split(';')[0];
 				query.token = ClientAuth;
 				query.groups = Object.keys(CurrentClient._bot.groups)
-
-				BackendCallbacks.push(function(type, data) {
-					if(type == 'join') {
-						query.groups.push(data)
-
-						listeners.post.edit(query)
-					}
-				})
 			}
 
 			if(listeners.post) {
 				listeners.post.edit(query)
 			} else {
-				socket.subscribe(query, async function(data) {
+				listeners.post = socket.subscribe(query, async function(data) {
 					if(data.type == 'newpost') {
 						let post = data.post;
 
@@ -181,6 +173,14 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 					}
 				})
 			}
+
+			BackendCallbacks.push(function(type, data) {
+				if(type == 'join') {
+					query.groups.push(data)
+
+					listeners.post.edit(query)
+				}
+			})
 
 			return;
 		}

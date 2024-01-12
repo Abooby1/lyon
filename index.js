@@ -65,7 +65,7 @@ export class Client {
 				}, function(data) {
 					switch(data.type) {
 						case 'join':
-							CurrentClient.user.groups[data.data._id] = data.data;
+							CurrentClient._bot.groups[data.data._id] = data.data;
 
 							Listeners.BackendCallbacks.forEach(callback => {
 								callback('join', data.data._id)
