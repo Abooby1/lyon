@@ -1,5 +1,5 @@
-# v1.0.1
-* Bug Fixes | Get more information in the Lyon Photop group.
+# v1.1
+* All data fetched from the Photop API is now cached.
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

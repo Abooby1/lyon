@@ -1,6 +1,8 @@
 import * as Utils from '../utils.js'
 import * as Classes from './index.js'
 
+let userCache = new Object()
+
 export class User {
 	constructor(dataObj) {
 		const data = { ...dataObj }
@@ -8,6 +10,21 @@ export class User {
 		this._init = null;
 		if(this._data.groupid) {
 			this._groupid = this._data.groupid;
+		}
+
+		let url = 'user';
+		if(this._data.id) {
+			url += `?id=${this._data.id}`;
+
+			if(userCache[this._data.id]) {
+				this._data.data = userCache[this._data.id];
+			}
+		} else if(this._data.name) {
+			url += `?name=${this._data.name}`;
+
+			if(userCache[this._data.name]) {
+				this._data.data = userCache[this._data.name];
+			}
 		}
 
 		return new Promise(async (res) => {
@@ -18,19 +35,15 @@ export class User {
 				res(this)
 			}
 
-			let url = 'user';
-			if(this._data.id) {
-				url += `?id=${this._data.id}`;
-			} else if(this._data.name) {
-				url += `?name=${this._data.name}`;
-			}
-
 			let [code, response] = await Utils.request('GET', url)
 			this._code = code;
 
 			if(this._code == 200) {
 				this._response = JSON.parse(response)
 				this._init = true;
+
+				userCache[this._response._id] = this._response;
+				userCache[this._response.name] = this._response;
 			} else {
 				console.error(`User class errored: ${response}`)
 			}

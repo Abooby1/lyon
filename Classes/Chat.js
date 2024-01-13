@@ -2,11 +2,26 @@ import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
 import { User } from './index.js'
 
+let chatCache = new Object()
+
 export class Chat {
 	constructor(dataObj) {
 		const data = { ...dataObj }
 		this._data = data;
 		this._init = null;
+
+		let url = 'chats';
+		if(this._data.postid) {
+			url += `?postid=${this._data.postid}`;
+		} else if(this._data.id) {
+			url += `?chatid=${this._data.id}`;
+
+			if(chatCache[this._data.id]) {
+				this._data.data = chatCache[this._data.id];
+			}
+		} else if(this._data.userid) {
+			url += `?userid=${this._data.userid}`;
+		}
 
 		return new Promise(async (res, rej) => {
 			if(this._data.data) {
@@ -14,15 +29,6 @@ export class Chat {
 				this._response = this._data.data;
 
 				res(this)
-			}
-
-			let url = 'chats';
-			if(this._data.postid) {
-				url += `?postid=${this._data.postid}`;
-			} else if(this._data.id) {
-				url += `?chatid=${this._data.id}`;
-			} else if(this._data.userid) {
-				url += `?userid=${this._data.userid}`;
 			}
 
 			if(this._data.groupid) {
@@ -35,6 +41,8 @@ export class Chat {
 			if(this._code == 200) {
 				this._response = JSON.parse(response).chats[0];
 				this._init = true;
+
+				chatCache[this._response._id] = this._response;
 			} else {
 				console.error(`Chat class errored: ${response}`)
 			}

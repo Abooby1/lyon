@@ -8,11 +8,22 @@ import FormData from 'form-data'
 import fs from 'fs'
 import axios from 'axios'
 
+let groupCache = new Object()
+
 export class Group {
 	constructor(dataObj) {
 		let data = { ...dataObj }
 		this._data = data;
 		this._init = null;
+
+		let url = 'groups';
+		if(this._data.id) {
+			url += `?groupid=${this._data.id}`;
+
+			if(groupCache[this._data.id]) {
+				this._data.data = groupCache[this._data.id];
+			}
+		}
 
 		return new Promise(async (res) => {
 			if(this._data.data) {
@@ -20,11 +31,6 @@ export class Group {
 				this._response = this._data.data;
 
 				res(this)
-			}
-
-			let url = 'groups';
-			if(this._data.id) {
-				url += `?groupid=${this._data.id}`;
 			}
 
 			if(this._data.before) {
@@ -40,6 +46,8 @@ export class Group {
 			if(this._code == 200) {
 				this._init = true;
 				this._response = JSON.parse(response).groups[0];
+
+				groupCache[this._response._id] = this._response;
 			} else {
 				console.error(`Group class errored: ${response}`)
 			}

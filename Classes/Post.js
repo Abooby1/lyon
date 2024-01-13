@@ -2,6 +2,8 @@ import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
 import { User, Chat } from './index.js'
 
+let postCache = new Object()
+
 export class Post {
 	constructor(dataObj) {
 		let data = { ...dataObj }
@@ -12,19 +14,23 @@ export class Post {
 		this._hasPoll = null;
 		//
 
+		let url = 'posts/get';
+		if(this._data.id) {
+			url += `?postid=${this._data.id}`;
+
+			if(postCache[this._data.id]) {
+				this._data.data = postCache[this._data.id];
+			}
+		} else if(this._data.userid) {
+			url += `?userid=${this._data.userid}`;
+		}
+
 		return new Promise(async (res) => {
 			if(this._data.data) {
 				this._init = true;
 				this._response = this._data.data;
 
 				res(this)
-			}
-
-			let url = 'posts/get';
-			if(this._data.id) {
-				url += `?postid=${this._data.id}`;
-			} else if(this._data.userid) {
-				url += `?userid=${this._data.userid}`;
 			}
 
 			if(this._data.groupid) {
@@ -52,6 +58,8 @@ export class Post {
 				if(this._response.Media && this._response.Media.Poll) {
 					this._hasPoll = true;
 				}
+
+				postCache[this._response._id] = this._response;
 			} else {
 				console.error(`Post class errored: ${response}`)
 			}
