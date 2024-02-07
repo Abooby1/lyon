@@ -1,5 +1,6 @@
-# v1.1
-* All data fetched from the Photop API is now cached.
+# v1.2
+* Added Post.onQuote()
+* Added Post.onLike()
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

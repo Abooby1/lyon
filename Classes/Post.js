@@ -136,6 +136,16 @@ export class Post {
 
 		return ['edit;post', callback];
 	}
+	async onQuote(callback) {
+		Listeners.addListener({ contentid: this._response._id, type: 'quoted;post', callback })
+
+		return ['quote;post', callback];
+	}
+	async onLike(callback) {
+		Listeners.addListener({ contentid: this._response._id, type: 'liked;post', callback })
+
+		return ['like;post', callback];
+	}
 
 	async disconnect(listener) {
 		if(typeof listener != 'object') return;
