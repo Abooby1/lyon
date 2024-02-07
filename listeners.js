@@ -158,13 +158,14 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 					if(data.type == 'newpost') {
 						let post = data.post;
 
-						for(let postid of callbacks.post.quotes) {
+						/*for(let postid of Object.keys(callbacks.post.quotes)) {
+							console.log(post)
 							if(post.Text && post.Text.includes(`/Post_${postid}`)) {
 								callbacks.post.quotes[postid]({
 									post: await new Classes.Post({ id: post._id, groupid: post.GroupID })
 								})
 							}
-						}
+						}*/
 
 						callbacks.post.new.forEach(async (callback) => {
 							if(typeof callback == 'function') {
@@ -279,9 +280,9 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 			return;
 		}
 
-		if(type == 'quoted') {
+		/*if(type == 'quoted') {
 			callbacks.post.quotes[contentid] = callback;
-		}
+		}*/
 
 		return;
 	}

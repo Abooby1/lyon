@@ -1,6 +1,9 @@
 import * as Utils from '../utils.js'
 import * as Listeners from '../listeners.js'
+import { ClientAuth } from '../index.js'
 import { User, Chat } from './index.js'
+
+import axios from 'axios'
 
 let postCache = new Object()
 
@@ -121,6 +124,39 @@ export class Post {
 		return await new User({ id: this._response.UserID })
 	}
 
+	async reply(text, data) {
+		if(!this._init) return;
+		data = { ...data };
+		text += ` /Post_${this._response._id}`;
+		if((!text || text.length == 0) && !(data.images || data.poll)) return 'Text is needed.';
+
+		let images = data.images || [];
+		let groupid = data.groupid || this._response.GroupID;
+		let poll = data.poll;
+
+		return new Promise(async (res, rej) => {
+			let formData = new FormData()
+			formData.append('data', JSON.stringify({ text, poll }))
+			for(let i=0;i<images.length;i++) {
+				formData.append(`image${i}`, fs.createReadStream(images[i]))
+			}
+
+			axios.post(`https://photop.exotek.co/posts/new${groupid?`?groupid=${groupid}`:''}`, formData, {
+				headers: {
+					auth: ClientAuth
+				}
+			}).then(async (response) => {
+				res(await new Classes.Post({ data: response.data }))
+			}).catch(response => {
+				if(!response.response) {
+					res(response.cause)
+					return;
+				}
+				res(response.response.data)
+			})
+		})
+	}
+
 	async onChat(callback) {
 		Listeners.addListener({ contentid: this._response._id, type: 'newchat;post', callback, groupid: this._groupid })
 
@@ -136,11 +172,11 @@ export class Post {
 
 		return ['edit;post', callback];
 	}
-	async onQuote(callback) {
+	/*async onQuote(callback) {
 		Listeners.addListener({ contentid: this._response._id, type: 'quoted;post', callback })
 
 		return ['quote;post', callback];
-	}
+	}*/
 	async onLike(callback) {
 		Listeners.addListener({ contentid: this._response._id, type: 'liked;post', callback })
 

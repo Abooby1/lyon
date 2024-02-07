@@ -1,5 +1,5 @@
 # v1.2
-* Added Post.onQuote()
+* Added Post.reply()
 * Added Post.onLike()
 
 # Redirects
