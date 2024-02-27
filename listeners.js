@@ -18,7 +18,9 @@ let callbacks = {// id: callback
 		chats: new Object(),
 		deletes: new Object(),
 		edits: new Object(),
-		votes: new Object()
+		votes: new Object(),
+		quotes: new Object(),
+		likes: new Object()
 	},
 	chat: {
 		deletes: new Object(),
@@ -32,10 +34,6 @@ let listeners = {
 }
 let cache = {
 	groupSockets: new Object()
-}
-
-export async function addCache({ type, contentid, data }) {
-	//
 }
 
 async function socketFunction(data) {
@@ -160,6 +158,15 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 					if(data.type == 'newpost') {
 						let post = data.post;
 
+						/*for(let postid of Object.keys(callbacks.post.quotes)) {
+							console.log(post)
+							if(post.Text && post.Text.includes(`/Post_${postid}`)) {
+								callbacks.post.quotes[postid]({
+									post: await new Classes.Post({ id: post._id, groupid: post.GroupID })
+								})
+							}
+						}*/
+
 						callbacks.post.new.forEach(async (callback) => {
 							if(typeof callback == 'function') {
 								callback(await new Classes.Post({ id: post._id, groupid: post.GroupID }))
@@ -214,21 +221,24 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 			return;
 		}
 
-		if(type == 'deleted' || type == 'edited' || type == 'pollvote') {
+		if(type == 'deleted' || type == 'edited' || type == 'pollvote' || type == 'liked') {
 			if(type == 'deleted') {
 				callbacks.post.deletes[contentid] = callback;
 			} else if(type == 'edited') {
 				callbacks.post.edits[contentid] = callback;
 			} else if(type == 'pollvote') {
 				callbacks.post.votes[contentid] = callback;
+			} else if(type == 'liked') {
+				callbacks.post.likes[contentid] = callback;
 			}
 
 			let deletedIds = Object.keys(callbacks.post.deletes)
 			let editedIds = Object.keys(callbacks.post.edits)
 			let pollIds = Object.keys(callbacks.post.votes)
+			let likeIds = Object.keys(callbacks.post.likes)
 			let query = {
 				task: 'post',
-				_id: [...new Set([...deletedIds, ...editedIds, ...pollIds])]
+				_id: [...new Set([...deletedIds, ...editedIds, ...pollIds, ...likeIds])]
 			}
 
 			if(!listeners.postActions) {
@@ -252,6 +262,15 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 								voteCallback(await new Classes.PollVote({ data }))
 							}
 							break;
+						case 'like':
+							let likeCallback = callbacks.post.likes[data._id];
+							if(likeCallback) {
+								likeCallback({
+									change: data.change,
+									author: await new Classes.User({ id: data.userID })
+								})
+							}
+							break;
 					}
 				})
 			} else {
@@ -260,6 +279,10 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 
 			return;
 		}
+
+		/*if(type == 'quoted') {
+			callbacks.post.quotes[contentid] = callback;
+		}*/
 
 		return;
 	}

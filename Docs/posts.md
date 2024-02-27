@@ -36,6 +36,9 @@ client.onPost(async (post) => {
 	* {function} - Function that will be called when the post is edited.
 * `Post.disconnect({array})` - Disconect a listener.
 	* {array} - The array any post listener param returns.
+* `Post.reply({string}, {object})` - Reply to the post with a new post.
+	* {string} - Text of the post
+  * {object} - { images: {array}, poll: { title: {string}, options: {array} }, groupid: {string} }
 * `Post.chat({string})` - Chat in the post.
 	* {string} - The text of the chat.
 * `Post.edit({string})` - Edit the post.
