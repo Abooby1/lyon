@@ -1,6 +1,6 @@
-# v1.2
-* Added Post.reply()
-* Added Post.onLike()
+# v1.3
+* Added User.onFollow() - x
+* Added User.onUnfollow() - x
 
 # Redirects
 * [Client](https://github.com/Abooby1/lyon/blob/main/README.md)

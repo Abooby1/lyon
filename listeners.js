@@ -25,12 +25,17 @@ let callbacks = {// id: callback
 	chat: {
 		deletes: new Object(),
 		edits: new Object()
+	},
+	user: {
+		follow: new Object(),
+		unfollow: new Object()
 	}
 }
 let listeners = {
 	post: null,
 	postActions: null,
-	group: null
+	group: null,
+	profiles: null
 }
 let cache = {
 	groupSockets: new Object()
@@ -283,6 +288,47 @@ export async function addListener({ type, contentid, groupid, postid, callback }
 		/*if(type == 'quoted') {
 			callbacks.post.quotes[contentid] = callback;
 		}*/
+
+		if(type == 'follow' || type == 'unfollow') {
+			if(type == 'follow') {
+				callbacks.user.follow[contentid] = callback;
+			} else if(type == 'unfollow') {
+				callbacks.user.unfollow[contentid] = callback;
+			}
+
+			let followIds = Object.keys(callbacks.user.follow)
+			let unfollowIds = Object.keys(callbacks.user.unfollow)
+			let query = {
+				task: 'profile',
+				_id: [ ...new Set([ ...followIds, ...unfollowIds ]) ]
+			}
+
+			if(!listeners.profiles) {
+				listeners.profiles = socket.subscribe(query, async function(data) {
+					switch(data.type) {
+						case 'follow':
+							if(data.change == 1) {
+								let followCallback = callbacks.user.follow[data._id];
+								if(followCallback) {
+									followCallback({
+										user: await new Classes.User({ id: data.userID })
+									})
+								}
+							} else {
+								let unfollowCallback = callbacks.user.unfollow[data._id];
+								if(unfollowCallback) {
+									unfollowCallback({
+										user: await new Classes.User({ id: data.userID })
+									})
+								}
+							}
+							break;
+					}
+				})
+			} else {
+				listeners.profiles.edit(query)
+			}
+		}
 
 		return;
 	}

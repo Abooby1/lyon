@@ -1,5 +1,6 @@
 import * as Utils from '../utils.js'
 import * as Classes from './index.js'
+import * as Listeners from '../listeners.js'
 
 let userCache = new Object()
 
@@ -192,6 +193,31 @@ export class User {
 				res(response)
 			}
 		})
+	}
+
+	async onFollow(callback) {
+		Listeners.addListener({ contentid: this._response._id, type: 'follow;user', callback })
+
+		return ['follow;user', callback];
+	}
+	async onUnfollow(callback) {
+		Listeners.addListener({ contentid: this._response._id, type: 'unfollow;user', callback })
+
+		return ['unfollow;user', callback];
+	}
+
+	async disconnect(listener) {
+		if(typeof listener != 'object') return;
+
+		try {
+			let [type, callback] = listener;
+
+			Listeners.removeListener({ callback, type, contentid: this._response._id, groupid: this._groupid })
+			return true;
+		} catch(err) {
+			console.error(`Listener given is invalid: ${listener}`)
+			return;
+		}
 	}
 
 	async ban({ length, reason, terminate }) {
