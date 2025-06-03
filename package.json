@@ -1,12 +1,20 @@
 {
   "name": "lyon",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A Photop bot client that makes creating bots simple.",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Abooby",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.9.0",
+    "form-data": "^4.0.2",
+    "fs": "^0.0.1-security",
+    "node-fetch": "^3.3.2",
+    "simple-socket-js": "^2.1.31"
+  }
 }
