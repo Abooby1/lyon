@@ -1,6 +1,9 @@
-import { Post, PostData } from "./Post.js";
+import { Post, PostControl } from "./Post.js";
+import { Poll, PollControl } from "./Poll.js";
 
 export {
   Post,
-  PostData
+  PostControl,
+  Poll,
+  PollControl
 };

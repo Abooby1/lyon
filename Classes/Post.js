@@ -3,9 +3,10 @@ import FormData from "form-data";
 import fs from "fs";
 
 import * as Utils from "../utils.js";
-import { CurrentClient } from "../index.js"
+import * as Classes from "./index.js";
+import { CurrentClient } from "../index.js";
 
-export class PostData {
+export class PostControl {
   #id;
   #init = false;
   #urlSetup = "posts/get";
@@ -15,6 +16,9 @@ export class PostData {
   #userData;
   #pollData;
   #groupId;
+
+  #pollClass;
+  #userClass;
 
   constructor(id, groupid) {
     this.#id = id;
@@ -44,6 +48,7 @@ export class PostData {
         let poll = (Utils.getObject(this.#rawData.polls, "_id"))[this.#postData._id];
 
         this.#pollData = { ...this.#postData.Poll, HasVoted: poll.HasVoted };
+        this.#pollClass = new Classes.PollControl(this.#pollData);
       }
 
       this.#init = true;
@@ -60,6 +65,11 @@ export class PostData {
 
     return this.#id;
   }
+  get poll() {
+    if(!this.#pollClass) return {};
+
+    return this.#pollClass;
+  }
 
   connect(timestamp, func) { // connect to sockets
     //
@@ -67,14 +77,23 @@ export class PostData {
   disconnect() { // disconnect sockets
     //
   }
+
+  delete() {
+    return new Promise(async (res, rej) => {
+      let [_, response] = await Utils.request("DELETE", `posts/edit/delete?postid=${this.#id}`);
+
+      res(response);
+    })
+  }
 }
 
 export class Post {
   #text;
   #images = [];
   #poll;
+  #groupid;
 
-  constructor(dataObj) {
+  constructor(dataObj = {}) {
     let data = { ...dataObj };
 
     if(data.text && typeof data.text == "string") {
@@ -106,8 +125,14 @@ export class Post {
   setPoll(poll) {
     return this;
   }
+  setGroup(groupid) {
+    if(typeof groupid != "string") return this;
 
-  create(groupid) {
+    this.#groupid = groupid;
+    return this;
+  }
+
+  create() {
     return new Promise(async (res, rej) => {
       let formData = new FormData();
       formData.append('data', JSON.stringify({ text: this.#text, poll: this.#poll }));
@@ -116,12 +141,12 @@ export class Post {
 				formData.append(image[0], image[1]);
 			}
 
-      axios.post(`https://api.photop.live/posts/new${groupid?`?groupid=${groupid}`:''}`, formData, {
+      axios.post(`https://api.photop.live/posts/new${this.#groupid?`?groupid=${this.#groupid}`:""}`, formData, {
 				headers: {
 					auth: CurrentClient._auth
 				}
 			}).then(async (response) => {
-        res(new PostData(response.data._id, response.data.GroupID));
+        res(new PostControl(response.data._id, response.data.GroupID));
 			}).catch(response => {
 				if(!response.response) {
 					res(response.cause)
@@ -130,17 +155,5 @@ export class Post {
 				res(response.response.data)
 			})
     });
-  }
-}
-
-class PollData {
-  constructor() {
-    //
-  }
-}
-
-class Poll extends PollData {
-  constructor() {
-    //
   }
 }

@@ -79,7 +79,11 @@ export class Client {
 	}
 }
 
-export default Client;
+export default {
+  Client,
+  Post: Classes.Post,
+  Poll: Classes.Poll
+};
 
 const client = new Client({
   userid: '63824e52d62f9d79c6459b40',
@@ -91,10 +95,11 @@ client.onReady(function() {
 })
 new Classes.Post()
   .setText('Hm i wonder....')
-  .addImages('./IMG_3306.JPEG')
-  .create('6456cd0feacd105604cf623e')
-  .then((post) => {
-    console.log(post)
+  .addImages('./IMG_3306.JPEG', './aboobyProfile400x400.png')
+  .setGroup('6456cd0feacd105604cf623e')
+  .create()
+  .then(async (post) => {
+    console.log(await post.delete())
   })
 
 process.on('unhandledRejection', error => {
