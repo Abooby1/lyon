@@ -5,11 +5,11 @@
 
 ---------
 <details>
-  <summary style="font-weight:bold;font-size:25px;margin-bottom:5px;">Properties</summary>
+  <summary><strong>Properties</strong></summary>
 
   <div style="font-family:monospace;border:solid;border-width:0;border-bottom-width:2px;border-color:#ffffff20;padding-bottom:10px;margin-bottom:10px;">
-    <span style="background:#8a11a680;color:#e678ff;width:fit-content;border-radius:100px;padding:2px 6px;font-weight:bold;font-size:13px;">readonly</span>
-    <span style="font-size:17px;font-weight:bold;">data : <a href="user.md">UserControl</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null" target="_blank">null</a></span>
+    <span><strong>readonly</strong></span>
+    <span>`data` : `<a href="user.md">UserControl</a>` | `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null" target="_blank">null</a>`</span>
     <div style="margin-top:6px;">User data of the bot.</div>
   </div>
 
