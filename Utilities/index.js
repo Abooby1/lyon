@@ -1,7 +1,10 @@
 import SimpleSocket from "simple-socket-js";
 import fetch from "node-fetch";
 import FormData from "form-data";
-import { CurrentClient, Config } from "./index.js";
+import { CurrentClient, Config } from "../index.js";
+
+import { Listener } from "./ListenerConfig.js";
+export { Listener };
 
 const socketConfig = {
 	project_id: "61b9724ea70f1912d5e0eb11",

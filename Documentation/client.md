@@ -1,4 +1,4 @@
-# class Client
+# Client Class
 <pre>export class Client</pre>
 
 ### The Client class initiates a connection to an account.

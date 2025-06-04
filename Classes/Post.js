@@ -2,7 +2,7 @@ import axios from "axios";
 import FormData from "form-data";
 import fs from "fs";
 
-import * as Utils from "../utils.js";
+import * as Utils from "../Utilities/index.js";
 import * as Classes from "./index.js";
 import { CurrentClient } from "../index.js";
 
@@ -123,6 +123,9 @@ export class Post {
     return this;
   }
   setPoll(poll) {
+    if(typeof poll != "object") return this;
+
+    //
     return this;
   }
   setGroup(groupid) {

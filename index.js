@@ -3,10 +3,12 @@ import fs from "fs";
 import FormData from "form-data";
 
 import * as Classes from "./Classes/index.js";
-import * as Utils from "./utils.js";
+import * as Utils from "./Utilities/index.js";
 
 export var CurrentClient;
-export var Config = { };
+export var Config = {
+  GroupConnections: true
+};
 
 export class Client {
   #sockets = { 
@@ -22,6 +24,8 @@ export class Client {
 
     CurrentClient = this;
 
+    this._id = userid;
+    this._token = token;
     this._auth = `${userid};${token}`;
     this._bot = null;
 
@@ -33,7 +37,6 @@ export class Client {
 			}
 		}
 
-    //init connections
     this.#setup();
   }
   async #setup () {
@@ -77,12 +80,18 @@ export class Client {
 
 		return `@${this._bot.user.User}"${this._bot.user._id}"`
 	}
+
+  onPost(callback, extra = {}) {
+    if(typeof callback != "function") return;
+    Utils.Listener.Post(callback, extra.groupid);
+
+    return true;
+  }
 }
 
 export default {
   Client,
-  Post: Classes.Post,
-  Poll: Classes.Poll
+  Post: Classes.Post
 };
 
 const client = new Client({
@@ -92,6 +101,10 @@ const client = new Client({
 
 client.onReady(function() {
   console.log(client.data)
+
+  client.onPost(function(data) {
+    console.log(data)
+  }, {groupid: '6456cd0feacd105604cf623e'})
 })
 
 process.on('unhandledRejection', error => {
