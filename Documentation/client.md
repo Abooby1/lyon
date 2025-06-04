@@ -7,10 +7,10 @@
 <details>
   <summary><strong>Properties</strong></summary>
 
-  <strong>readonly</strong> `data` : `<a href="user.md">UserControl</a>` | `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null" target="_blank">null</a>`
+  <strong>readonly</strong> `data` : `[UserControl](user.md)` | `[null](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/null)`
   User data of the bot.
 
-  <strong>readonly</strong> `mention` : `<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank">string</a>`
+  <strong>readonly</strong> `mention` : `[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)`
   Returns the mention of the bot.
 </details>
 
