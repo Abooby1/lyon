@@ -25,30 +25,3 @@ export class PollControl {
     //
   }
 }
-
-export class Poll {
-  constructor(dataObj = {}) {
-    let data = { ...dataObj };
-
-    if(data.Title) {
-      if(typeof data.Title != "string") return;
-
-      this.Title = data.Title;
-    }
-    if(data.Options) {
-      if(typeof data.Options != "object") return;
-
-      this.Options = data.Options;
-    }
-  }
-
-  setTitle(title) {
-    if(typeof title != "string") return this;
-    this.Title = title;
-
-    return this;
-  }
-  addOptions(...options) {
-    return this;
-  }
-}

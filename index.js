@@ -70,7 +70,7 @@ export class Client {
   get data() {
 		if(!this._bot) return;
 
-		return this._bot.user;
+		return this._bot.user; // Switch to user class
 	}
 	get mention() {
 		if(!this._bot) return;
@@ -91,16 +91,8 @@ const client = new Client({
 })
 
 client.onReady(function() {
-  console.log('hi')
+  console.log(client.data)
 })
-new Classes.Post()
-  .setText('Hm i wonder....')
-  .addImages('./IMG_3306.JPEG', './aboobyProfile400x400.png')
-  .setGroup('6456cd0feacd105604cf623e')
-  .create()
-  .then(async (post) => {
-    console.log(await post.delete())
-  })
 
 process.on('unhandledRejection', error => {
 	console.error('Unhandled promise rejection:', error);
