@@ -87,6 +87,10 @@ export class Client {
 
     return true;
   }
+
+  async getPost(id, groupid) {
+    return new Classes.PostControl(id, groupid);
+  }
 }
 
 export default {
@@ -102,8 +106,8 @@ const client = new Client({
 client.onReady(function() {
   console.log(client.data)
 
-  client.onPost(function(data) {
-    console.log(data)
+  client.onPost(async function(data) {
+    //
   }, {groupid: '6456cd0feacd105604cf623e'})
 })
 

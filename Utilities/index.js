@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 import FormData from "form-data";
 import { CurrentClient, Config } from "../index.js";
 
-import { Listener } from "./ListenerConfig.js";
+import { Listener } from "./Listener.js";
 export { Listener };
 
 const socketConfig = {

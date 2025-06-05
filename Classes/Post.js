@@ -39,11 +39,6 @@ export class PostControl {
       this.#postData = this.#rawData.posts[0];
       this.#userData = this.#rawData.users[0];
 
-      let [uCode, uResponse] = await Utils.request("GET", `user?id=${this.#userData._id}`);
-      if(uCode == 200) {
-        this.#userData = JSON.parse(uResponse);
-      }
-
       if(this.#postData.Media && this.#postData.Poll) {
         let poll = (Utils.getObject(this.#rawData.polls, "_id"))[this.#postData._id];
 
@@ -61,9 +56,52 @@ export class PostControl {
   }
 
   get id() {
+    return this.#id;
+  }
+  get groupid() {
+    return this.#groupId;
+  }
+  get content() {
     if(!this.#postData) return;
 
-    return this.#id;
+    return this.#postData.Text;
+  }
+  get created() {
+    if(!this.#postData) return;
+
+    return this.#postData.Timestamp;
+  }
+  get media() {
+    if(!this.#postData) return;
+
+    let images = [];
+		if (this.#postData.Media != null && this.#postData.Media.ImageCount > 0) {
+			for (let i = 0; i < this.#postData.Media.ImageCount; i++) {
+				images.push(`https://photop-content.s3.amazonaws.com/PostImages/${this.#postData._id}${i}`);
+			}
+		}
+
+		return images;
+  }
+  get likes() {
+    if(!this.#postData) return 0;
+
+    return this.#postData.Likes || 0;
+  }
+  get quotes() {
+    if(!this.#postData) return 0;
+
+    return this.#postData.Quotes || 0;
+  }
+  get chats() {
+    if(!this.#postData) return 0;
+
+    return this.#postData.Chats || 0;
+  }
+  get author() {
+    if(!this.#userData) return 0;
+
+    return new Classes.UserControl(this.#userData._id);
   }
   get poll() {
     if(!this.#pollClass) return {};
@@ -71,19 +109,85 @@ export class PostControl {
     return this.#pollClass;
   }
 
-  connect(timestamp, func) { // connect to sockets
-    //
-  }
-  disconnect() { // disconnect sockets
-    //
-  }
-
   delete() {
-    return new Promise(async (res, rej) => {
+    return new Promise(async (res) => {
       let [_, response] = await Utils.request("DELETE", `posts/edit/delete?postid=${this.#id}`);
 
       res(response);
     })
+  }
+  edit(text) {
+    return new Promise(async (res) => {
+      let formData = new FormData();
+      formData.append('data', JSON.stringify({ text }));
+
+      axios.post(`https://api.photop.live/posts/edit?postid=${this.#id}`, formData, {
+				headers: {
+					auth: CurrentClient._auth
+				}
+			}).then(async (response) => {
+        res(response);
+			}).catch(response => {
+				if(!response.response) {
+					res(response.cause);
+					return;
+				}
+				res(response.response.data);
+			})
+    })
+  }
+  chat(text) {
+    //
+  }
+
+  pin() {
+    return new Promise(async (res) => {
+      let [_, response] = await Utils.request("PUT", `posts/edit/pin?postid=${this.#id}`);
+
+      res(response);
+    })
+  }
+  unpin() {
+    return new Promise(async (res) => {
+      let [_, response] = await Utils.request("DELETE", `posts/edit/unpin?postid=${this.#id}`);
+
+      res(response);
+    })
+  }
+
+  like() {
+    return new Promise(async (res) => {
+      let [_, response] = await Utils.request("PUT", `posts/like?postid=${this.#id}`);
+
+      res(response);
+    })
+  }
+  unlike() {
+    return new Promise(async (res) => {
+      let [_, response] = await Utils.request("DELETE", `posts/unline?postid=${this.#id}`);
+
+      res(response);
+    })
+  }
+
+  report() {
+    //
+  }
+
+  onChat() {
+    //
+  }
+  onDelete() {
+    //
+  }
+  onEdit() {
+    //
+  }
+  onLike() {
+    //
+  }
+  onQuote() {
+    //
   }
 }
 
@@ -152,10 +256,10 @@ export class Post {
         res(new PostControl(response.data._id, response.data.GroupID));
 			}).catch(response => {
 				if(!response.response) {
-					res(response.cause)
+					res(response.cause);
 					return;
 				}
-				res(response.response.data)
+				res(response.response.data);
 			})
     });
   }
